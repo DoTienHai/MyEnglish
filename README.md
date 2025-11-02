@@ -1,0 +1,1 @@
+MyEnglish is a personal desktop application built with Python and Flet, designed as both a learning project and a practical English learning tool. The goal of this project is twofold: to explore how to create modern desktop apps using Flet, and to build a real, useful application for personal English study.
