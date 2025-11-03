@@ -18,7 +18,7 @@ class AppLayout:
         self.header =  Header(self.page)
         self.nav_bar = NavBar(self.switch_screen)
         self.body_container = ft.Container(
-            content=self.home_screen, expand=True, padding=20
+            content=self.home_screen, expand=True, padding=10
         )
         self.footer = Footer()
         # ---------------- MAIN LAYOUT ----------------
