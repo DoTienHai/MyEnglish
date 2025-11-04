@@ -11,7 +11,40 @@ class TranslatePracticeScreen(ft.Container):
         self.sentences_fields = []
         self.translation_text_fields = []
         self.new_words_fields = []
-        self.content_default = ft.Column( # default content same step 1
+        self.translator = TranslationService()
+        self.content = None
+        super().__init__(
+            content=ft.Column( # default content same step 1
+            controls=[
+                ft.TextField(
+                    label="Enter text to translate",
+                    multiline=True,
+                    expand=True,
+                ),
+                ft.ElevatedButton(
+                    "Start translate",
+                    on_click=self.start_translate,
+                ),
+            ],
+            spacing=10
+        ),
+            expand=False,
+            padding=10
+        )
+
+    def update_content(self, content=None, component_update=False, page_update=False, clear_content=False):
+        if content:
+            if self.content and clear_content:
+                self.content.controls.clear()
+            self.content = content
+        if component_update:
+            self.update()
+        if page_update:
+            self.page.update()
+
+    # ---------------- STEP 1 ----------------
+    def build_step_1(self):
+        step_1_content = ft.Column( # default content same step 1
             controls=[
                 ft.TextField(
                     label="Enter text to translate",
@@ -25,24 +58,6 @@ class TranslatePracticeScreen(ft.Container):
             ],
             spacing=10
         )
-        self.content = self.content_default
-        super().__init__(
-            content=self.content,
-            expand=False,
-            padding=10
-        )
-
-    def update_content(self, content=None, component_update=False, page_update=False):
-        if content:
-            self.content = content
-        if component_update:
-            self.update()
-        if page_update:
-            self.page.update()
-
-    # ---------------- STEP 1 ----------------
-    def build_step_1(self):
-        step_1_content = self.content_default
         self.update_content(content=step_1_content, component_update=True, page_update=False)
     def start_translate(self, event):
         self.input_text = self.content.controls[0].value
@@ -115,13 +130,14 @@ class TranslatePracticeScreen(ft.Container):
             ft.Text(value="Translating!", color=ft.Colors.GREEN_300, size=24),
             ft.ProgressBar(bar_height=200, width=500, bgcolor="#eeeeee", color=ft.Colors.GREEN_300, ),],
             spacing=20, alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
+        
         for index in range(len(self.sentences_fields)):
             process_bar.controls[0].value = f"Translating: {(index+1)}/{len(self.sentences_fields)}!"
             process_bar.controls[1].value = (index)/len(self.sentences_fields)
             self.update_content(content=process_bar,component_update=True, page_update=False)
 
             user_translation = self.translation_text_fields[index].value
-            correct_translation = TranslationService().translate_eng_to_vn(self.sentences_fields[index].value)
+            correct_translation = self.translator.translate_eng_to_vn(self.sentences_fields[index].value)
             list_view.controls.append(ft.Column(
                 controls=[
                     self.sentences_fields[index],
@@ -156,8 +172,15 @@ class TranslatePracticeScreen(ft.Container):
         self.update_content(content=step_3_content,component_update=True, page_update=False)
 
     def reset(self):
-        self.current_step = 1
+        # Xóa control cũ để ngắt tham chiếu
+        self.content.controls.clear()
+        self.sentences_fields.clear()
+        self.translation_text_fields.clear()
+        self.new_words_fields.clear()
+
+        # Reset dữ liệu
         self.input_text = ""
-        self.sentences_fields = []
-        self.translation_text_fields = []
+        self.current_step = 1
+
+        # Build lại UI gốc
         self.build_step_1()
