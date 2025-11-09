@@ -1,5 +1,6 @@
-APP_NAME = "MyEnglish"
 from enum import Enum
+
+APP_NAME = "MyEnglish"
 
 class Screen(Enum):
     HOME = "home"
