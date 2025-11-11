@@ -1,4 +1,5 @@
 import os
+import re
 import sqlite3
 import threading
 
@@ -41,11 +42,16 @@ class DatabaseManager:
             self.conn = None
 
     def execute(self, query, params=(), commit=False):
-        """Thực thi query an toàn."""
-        self.cursor.execute(query, params)
-        if commit:
-            self.conn.commit()
-        return self.cursor
+        cursor = self.conn.cursor()
+        try:
+            cursor.execute(query, params)
+            if commit:
+                self.conn.commit()
+            lastrowid = cursor.lastrowid
+            return lastrowid  # trả về ID trực tiếp
+        finally:
+            cursor.close()
+
 
     # -----------------------------
     # Tạo bảng
@@ -66,10 +72,10 @@ class DatabaseManager:
         CREATE TABLE IF NOT EXISTS sentences (
             id INTEGER PRIMARY KEY,
             session_id INTEGER NOT NULL,
-            sentence_index INTEGER,
+            sentence_index INTEGER NOT NULL,
             source_sentence TEXT NOT NULL,
             translated_sentence TEXT,
-            cloud_translated_sentence TEXT NOT NULL,
+            cloud_translated_sentence TEXT,
             score REAL,
             note TEXT,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -103,7 +109,7 @@ class DatabaseManager:
     # -----------------------------
     # Sessions (bài đọc input)
     # -----------------------------
-    def create_session(self, title, source_text, source_reference=""):
+    def add_session(self, title, source_text, source_reference=""):
         if not title.strip():
             title = ""
         
@@ -113,7 +119,7 @@ class DatabaseManager:
         if source_reference.strip():
             source_reference = source_reference.strip()
 
-        self.execute(
+        session_id = self.execute(
             """
             INSERT INTO sessions (title, source_text, source_reference)
             VALUES (?, ?, ?)
@@ -122,14 +128,13 @@ class DatabaseManager:
             commit=True
         )
 
-        session_id = self.cursor.lastrowid
         if not title:
             auto_title = f"bài viết số {session_id}"
             self.execute(
                 "UPDATE sessions SET title = ? WHERE id = ?",
                 (auto_title, session_id),
                 commit=True
-            )
+            )  
         return session_id
 
     def get_sessions(self):
@@ -153,17 +158,17 @@ class DatabaseManager:
     # -----------------------------
     # Sentences
     # -----------------------------
-    def add_sentence(self, session_id, index, source, translation=None, cloud_translation="", score=None, note=None):
-        self.execute(
+    def add_sentence(self, session_id, sentence_index, source, translation=None, cloud_translation="", score=None, note=None):
+        sentence_id=self.execute(
             """
             INSERT INTO sentences 
             (session_id, sentence_index, source_sentence, translated_sentence, cloud_translated_sentence, score, note)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
-            (session_id, index, source, translation, cloud_translation, score, note),
+            (session_id, sentence_index, source, translation, cloud_translation, score, note),
             commit=True
         )
-        return self.cursor.lastrowid
+        return sentence_id
 
 
     def get_sentences_by_session(self, session_id):
@@ -177,6 +182,43 @@ class DatabaseManager:
             (session_id,)
         )
         return cur.fetchall()
+
+    def update_sentence(self, session_id, sentence_id, translation=None, cloud_translation=None, score=None, note=None):
+        """
+        Cập nhật một hoặc nhiều trường trong bảng sentences cho 1 record cụ thể.
+        Chỉ những trường được truyền khác None mới được cập nhật.
+        """
+        # Gom các cặp field = value cần cập nhật
+        fields = []
+        values = []
+
+        if translation is not None:
+            fields.append("translated_sentence = ?")
+            values.append(translation)
+        if cloud_translation is not None:
+            fields.append("cloud_translated_sentence = ?")
+            values.append(cloud_translation)
+        if score is not None:
+            fields.append("score = ?")
+            values.append(score)
+        if note is not None:
+            fields.append("note = ?")
+            values.append(note)
+
+        # Nếu không có gì để update thì bỏ qua
+        if not fields:
+            return 0
+
+        # Tạo câu query động
+        query = f"""
+            UPDATE sentences
+            SET {', '.join(fields)}
+            WHERE sentence_index = ? AND session_id = ?
+        """
+
+        values.extend([sentence_id, session_id])
+        self.execute(query, values, commit=True)
+        return sentence_id
 
 
     def delete_sentence(self, sentence_id):
@@ -253,7 +295,7 @@ if __name__ == "__main__":
     db = DatabaseManager(db_path="data\\app_data.db")
 
     # Tạo 1 bài đọc input
-    session_id = db.create_session("Bài đọc 1", "Hello world. This is a test.")
+    session_id = db.add_session("Bài đọc 1", "Hello world. This is a test.")
 
     # Thêm câu
     s1 = db.add_sentence(session_id, 1, "Hello world.", translation="Xin chào thế giới.", cloud_translation="Hello world.")

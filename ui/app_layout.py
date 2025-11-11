@@ -3,7 +3,7 @@ from ui.widgets.header  import *
 from ui.widgets.navbar  import *
 from ui.widgets.footer  import *
 from ui.widgets.translate_practice import *
-from ui.home import *
+from ui.widgets.home import *
 import flet as ft
 
 class AppLayout:
@@ -58,10 +58,10 @@ class AppLayout:
         return self.layout
 
 
-def main(page: ft.Page):
+def main_layout(page: ft.Page):
     page.title = APP_NAME
     app = AppLayout(page)
     page.add(app.build())
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.app(target=main_layout)
