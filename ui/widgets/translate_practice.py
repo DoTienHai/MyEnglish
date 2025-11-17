@@ -1,13 +1,11 @@
 import flet as ft
-import re
-
 from controller.translate_practice_controller import TranslatePracticeController
 
 class TranslatePracticeScreen(ft.Container):
     def __init__(self, page: ft.Page):
         self.page = page
-        
         self.controller = TranslatePracticeController()
+        
         self.title = ft.TextField(
                     label="Enter title of session",
                     multiline=False,
@@ -28,11 +26,6 @@ class TranslatePracticeScreen(ft.Container):
         self.translation_text_fields = []
         self.new_words_fields = []
         self.content = None
-        
-        self.number_of_sentences = 0
-        self.session_id = None
-        self.sentence_id = []
-        self.score = []
         
         super().__init__(
             content=ft.Column( # default content same step 1
@@ -75,7 +68,6 @@ class TranslatePracticeScreen(ft.Container):
         self.title.value = ""
         self.ref_source.value = ""
         self.input_text.value = ""
-        self.number_of_sentences = 0
         
         step_1_content = ft.Column(
             controls=[
@@ -117,10 +109,6 @@ class TranslatePracticeScreen(ft.Container):
 
         list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True)
         for sentence in sentences:
-            sentence = sentence.strip()
-            if not sentence:
-                continue
-            self.number_of_sentences += 1
             text_input = ft.Text(sentence, size=16, weight="bold", expand=True)
             text_field = ft.TextField(label="Enter translation", expand=True)
             new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True)
@@ -157,18 +145,19 @@ class TranslatePracticeScreen(ft.Container):
         text_value_translations = []
         for text_field in self.translation_text_fields:
             text_value_translations.append(text_field.value)
+        self.controller.process_translations(text_value_translations)
             
         new_words_value_translations = []
         for new_words_field in self.new_words_fields:
             new_words_value_translations.append(new_words_field.value)
-
-        self.score = self.controller.process_translations(text_value_translations, new_words_value_translations)
+        self.controller.process_new_words(new_words_value_translations)
+        
         self.build_step_3()
 
     # ---------------- STEP 3: VIEW RESULTS ---------------
     def build_step_3(self):
         list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True) 
-        for index in range(self.number_of_sentences):
+        for index in range(self.controller.number_of_sentences()):
             user_translation = self.translation_text_fields[index].value
             correct_translation = self.controller.get_cloud_translations()[index]
             list_view.controls.append(ft.Column(
@@ -176,7 +165,7 @@ class TranslatePracticeScreen(ft.Container):
                     ft.Text(f"Source sentence: {self.controller.get_sentences()[index]}", size=16, weight="bold"),
                     ft.Text(f"Your Translation: {user_translation}", size=16),
                     ft.Text(f"Correct Translation: {correct_translation}", size=16, color=ft.Colors.GREEN),
-                    ft.Text(f"Score: {self.score[index]}/10.", size=16, color=ft.Colors.GREEN),
+                    ft.Text(f"Score: {self.controller.get_scores()[index]}/10.", size=16, color=ft.Colors.GREEN),
                     ft.Divider(),
                 ],
                 spacing=5,
@@ -204,11 +193,6 @@ class TranslatePracticeScreen(ft.Container):
         self.content.controls.clear()
         self.translation_text_fields.clear()
         self.new_words_fields.clear()
-
-        # Reset dữ liệu
-        self.title.value = ""
-        self.ref_source.value = ""
-        self.input_text.value = ""
 
         # Build lại UI gốc
         self.build_step_1()

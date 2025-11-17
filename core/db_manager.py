@@ -65,7 +65,8 @@ class DatabaseManager:
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             source_text TEXT NOT NULL,
-            source_reference TEXT, 
+            source_reference TEXT,
+            score REAL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
 
@@ -88,19 +89,11 @@ class DatabaseManager:
             part_of_speech TEXT,
             meaning TEXT,
             description TEXT,
+            example TEXT,
             correct_count INTEGER DEFAULT 0,
             wrong_count INTEGER DEFAULT 0,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
             UNIQUE(word)
-        );
-
-        CREATE TABLE IF NOT EXISTS vocabulary_sentences (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            vocab_id INTEGER NOT NULL,
-            sentence_id INTEGER NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (vocab_id) REFERENCES vocabulary(id) ON DELETE CASCADE,
-            FOREIGN KEY (sentence_id) REFERENCES sentences(id) ON DELETE CASCADE
         );
         """
         self.conn.executescript(schema)
@@ -146,6 +139,13 @@ class DatabaseManager:
             """
         )
         return cur.fetchall()
+
+    def update_score_session(self, session_id, score):
+        self.execute(
+            "UPDATE sessions SET score = ? WHERE id = ?",
+            (score, session_id),
+            commit=True
+        )
 
     def delete_session(self, session_id):
         self.execute(
@@ -232,17 +232,16 @@ class DatabaseManager:
     # -----------------------------
     # Vocabulary
     # -----------------------------
-    def add_vocabulary(self, word, part_of_speech=None, meaning=None, description=None):
-        self.execute(
+    def add_vocabulary(self, word, part_of_speech=None, meaning=None, description=None, example=None):
+        vocab_id = self.execute(
             """
-            INSERT OR IGNORE INTO vocabulary (word, part_of_speech, meaning, description)
-            VALUES (?, ?, ?, ?)
+            INSERT OR IGNORE INTO vocabulary (word, part_of_speech, meaning, description, example)
+            VALUES (?, ?, ?, ?, ?)
             """,
-            (word, part_of_speech, meaning, description),
+            (word, part_of_speech, meaning, description, example),
             commit=True
         )
-        cur = self.execute("SELECT id FROM vocabulary WHERE word = ?", (word,))
-        return cur.fetchone()[0]
+        return vocab_id
 
 
     def delete_vocabulary(self, vocab_id):
@@ -251,35 +250,6 @@ class DatabaseManager:
             (vocab_id,),
             commit=True
         )
-
-
-    # -----------------------------
-    # Vocabulary sentences
-    # -----------------------------
-    def link_vocab_to_sentence(self, vocab_id, sentence_id):
-        self.execute(
-            """
-            INSERT INTO vocabulary_sentences (vocab_id, sentence_id)
-            VALUES (?, ?)
-            """,
-            (vocab_id, sentence_id),
-            commit=True
-        )
-
-
-    def get_vocab_contexts(self, vocab_id):
-        cur = self.execute(
-            """
-            SELECT s.source_sentence, s.translated_sentence, s.cloud_translated_sentence
-            FROM vocabulary_sentences vs
-            JOIN sentences s ON vs.sentence_id = s.id
-            WHERE vs.vocab_id = ?
-            ORDER BY s.sentence_index
-            """,
-            (vocab_id,)
-        )
-        return cur.fetchall()
-
 
     # -----------------------------
     # Utility

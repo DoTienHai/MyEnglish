@@ -17,6 +17,8 @@ def scored(vn_sentence1, vn_sentence2, max_score=10):
     
     # Quy đổi sang điểm (0 → max_score)
     score = round(similarity * max_score, 2)
+    if score < 0:
+        score = 0
     return score
 
 

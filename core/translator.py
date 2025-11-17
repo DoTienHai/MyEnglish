@@ -9,17 +9,17 @@ class TranslationService:
         self.translate_cloud = translate.Client.from_service_account_json("gg_cloud_key.json")
 
     def translate_eng_to_vn(self, text, free=True, retries=3):
-            for attempt in range(retries):
-                try:
-                    if free:
-                        return self.translator_free.translate(text, src='en', dest='vi').text
-                    else:
-                        print("cloud translator")
-                        return self.translate_cloud.translate(text, source_language='en',target_language='vi')["translatedText"]
-                except Exception as e:
-                    print(f"Lỗi dịch lần {attempt+1}: {e}")
-                    time.sleep(1)  # đợi 1s rồi thử lại
-            return "[Translation failed]"
+        for attempt in range(retries):
+            try:
+                if free:
+                    return self.translator_free.translate(text, src='en', dest='vi').text
+                else:
+                    print("cloud translator")
+                    return self.translate_cloud.translate(text, source_language='en',target_language='vi')["translatedText"]
+            except Exception as e:
+                print(f"Lỗi dịch lần {attempt+1}: {e}")
+                time.sleep(1)  # đợi 1s rồi thử lại
+        return "[Translation failed]"
 
 if __name__ == "__main__":
     translator =TranslationService()

@@ -1,6 +1,6 @@
 import flet as ft
 from ui.app_layout import main_layout
-from core.sqlite3 import DatabaseManager
+from core.db_manager import DatabaseManager
 
 if __name__ == "__main__":
     DatabaseManager(db_path="data/app_data.db")
