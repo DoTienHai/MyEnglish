@@ -8,6 +8,8 @@ def scored(vn_sentence1, vn_sentence2, max_score=10):
     So sánh 2 câu tiếng Việt và trả về điểm similarity
     max_score: số điểm tối đa
     """
+    if vn_sentence1 is None or vn_sentence2 is None:
+        return 0
     # Encode 2 câu thành embedding
     emb1 = model.encode(vn_sentence1, convert_to_tensor=True)
     emb2 = model.encode(vn_sentence2, convert_to_tensor=True)

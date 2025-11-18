@@ -66,6 +66,7 @@ class DatabaseManager:
             title TEXT NOT NULL,
             source_text TEXT NOT NULL,
             source_reference TEXT,
+            translated_text TEXT,
             score REAL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
@@ -102,7 +103,7 @@ class DatabaseManager:
     # -----------------------------
     # Sessions (bài đọc input)
     # -----------------------------
-    def add_session(self, title, source_text, source_reference=""):
+    def add_session(self, title, source_text, source_reference="", translated_text=""):
         if not title.strip():
             title = ""
         
@@ -114,10 +115,10 @@ class DatabaseManager:
 
         session_id = self.execute(
             """
-            INSERT INTO sessions (title, source_text, source_reference)
-            VALUES (?, ?, ?)
+            INSERT INTO sessions (title, source_text, source_reference, translated_text)
+            VALUES (?, ?, ?, ?)
             """,
-            (title, source_text, source_reference),
+            (title, source_text, source_reference, translated_text),
             commit=True
         )
 

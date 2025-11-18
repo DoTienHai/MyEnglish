@@ -11,6 +11,7 @@ class TranslatePracticeController:
         self.title = None
         self.ref_source = None
         self.input_text = None
+        self.translate_input = None
         self.session_id = None
         self.sentences = []
         self.scores = []
@@ -21,8 +22,8 @@ class TranslatePracticeController:
         self.title = title
         self.ref_source = ref_source
         self.input_text = input_text
-
-        self.session_id = self.db_manager.add_session(self.title, self.input_text, self.ref_source)
+        self.translate_input = self.translator.translate_eng_to_vn(input_text)
+        self.session_id = self.db_manager.add_session(self.title, self.input_text, self.ref_source, self.translate_input)
         split_input = re.split(r'(?<=[.!?])\s+', self.input_text.strip())
         count = 0
         for sentence in split_input:

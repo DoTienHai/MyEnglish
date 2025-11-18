@@ -1,4 +1,6 @@
 import flet as ft
+import threading
+from ui.components.loading_overlay import *
 from controller.translate_practice_controller import TranslatePracticeController
 
 class TranslatePracticeScreen(ft.Container):
@@ -100,8 +102,15 @@ class TranslatePracticeScreen(ft.Container):
             )
             self.page.open(alert)
         else:
-            self.controller.process_input(self.title.value, self.ref_source.value, self.input_text.value)
-            self.build_step_2()
+            # Hiển thị loading
+            loading = LoadingOverlay(message="Preparing, please wait...")
+            self.update_content(content=loading.build(), component_update=True, page_update=False)
+
+            def run_processing():
+                self.controller.process_input(self.title.value, self.ref_source.value, self.input_text.value)
+                self.build_step_2()
+
+            threading.Thread(target=run_processing).start()
 
     # ---------------- STEP 2: INPUT TRANSLATIONS ----------------
     def build_step_2(self):
@@ -142,17 +151,21 @@ class TranslatePracticeScreen(ft.Container):
         self.update_content(content=step_2_content, component_update=True, page_update=False)
 
     def submit_translations(self, event):
-        text_value_translations = []
-        for text_field in self.translation_text_fields:
-            text_value_translations.append(text_field.value)
-        self.controller.process_translations(text_value_translations)
-            
-        new_words_value_translations = []
-        for new_words_field in self.new_words_fields:
-            new_words_value_translations.append(new_words_field.value)
-        self.controller.process_new_words(new_words_value_translations)
-        
-        self.build_step_3()
+        # Hiển thị loading
+        loading = LoadingOverlay(message="Processing, please wait...")
+        self.update_content(content=loading.build(), component_update=True, page_update=False)
+
+        # Lấy dữ liệu trước khi chạy thread
+        text_value_translations = [tf.value for tf in self.translation_text_fields]
+        new_words_value_translations = [nf.value for nf in self.new_words_fields]
+        def run_processing():
+            self.controller.process_translations(text_value_translations)
+            self.controller.process_new_words(new_words_value_translations)
+
+            self.build_step_3()
+
+        threading.Thread(target=run_processing).start()
+
 
     # ---------------- STEP 3: VIEW RESULTS ---------------
     def build_step_3(self):
