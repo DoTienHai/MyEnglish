@@ -11,19 +11,20 @@ class TranslatePracticeController:
         self.title = None
         self.ref_source = None
         self.input_text = None
-        self.translate_input = None
+        self.input_translated = None
         self.session_id = None
         self.sentences = []
-        self.scores = []
+        self.user_translations = []
         self.cloud_translations = []  
+        self.scores = []
         self.new_words = []
     
     def process_input(self, title:str, ref_source:str,input_text:str):
         self.title = title
         self.ref_source = ref_source
         self.input_text = input_text
-        self.translate_input = self.translator.translate_eng_to_vn(input_text)
-        self.session_id = self.db_manager.add_session(self.title, self.input_text, self.ref_source, self.translate_input)
+        self.input_translated = self.translator.translate_eng_to_vn(input_text)
+        self.session_id = self.db_manager.add_session(self.title, self.input_text, self.ref_source, self.input_translated)
         split_input = re.split(r'(?<=[.!?])\s+', self.input_text.strip())
         count = 0
         for sentence in split_input:
@@ -49,6 +50,7 @@ class TranslatePracticeController:
         return self.cloud_translations
     
     def process_translations(self, translations:list[str]):
+        self.user_translations = translations
         for idx, translation in enumerate(translations, start=1):
             score = scored(translation, self.cloud_translations[idx-1])
             self.scores.append(score)
@@ -56,6 +58,8 @@ class TranslatePracticeController:
         self.db_manager.update_score_session(self.session_id, round(sum(self.scores)/len(self.scores), 2))
         return self.scores
 
+    def get_user_translations(self):
+        return self.user_translations
     def get_scores(self):
         return self.scores
 

@@ -9,11 +9,17 @@ https://console.cloud.google.com/apis/api/translate.googleapis.com/quotas?projec
 - Tính điểm cho cả đoạn
 - thêm cột text được dịch cho đoạn văn
 - step 1 từ khi nhân input đến khi hiển thị step 2 đang có thời gian chờ lâu mà k báo cho người dùng
-
-- Cải thiện dao diện khi loading
-- cải thiện khả năng dịch, tính toán cho app cá nhân có thể hoàn toàn sử dụng được bằng gg cloud API không để có thể đạt được chất lượng cao hơn.
-- Thêm cảnh báo nếu người dùng chưa dịch hết toàn bộ các câu
 - Bổ sung tạo thread dịch riêng ngay khi nhận được input đẻ feedback sớm hơn cho step 2
+
+25/11/2025
+- Cải thiện giao diện khi loading
+- Thêm cảnh báo nếu người dùng chưa dịch hết toàn bộ các câu
+
+- Xác định sesion đã được dịch hoàn thiện chưa
+- Làm đẹp các alert
+- Tạo class TextSelection
+- tạo thêm widget hiển thị danh sách các sesion
+- cải thiện khả năng dịch, tính toán cho app cá nhân có thể hoàn toàn sử dụng được bằng gg cloud API không để có thể đạt được chất lượng cao hơn.
 - Thiết kế lại hiệu ứng chờ cho người dùng
 - XỬ lý thêm từ loại cho từ mới
 - Xử lý trường hợp add trùng từ mới
