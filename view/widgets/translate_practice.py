@@ -1,6 +1,6 @@
 import flet as ft
 import threading
-from ui.components.Loading import *
+from view.components.Loading import *
 from controller.translate_practice_controller import TranslatePracticeController
 
 class TranslatePracticeScreen(ft.Container):
@@ -116,8 +116,8 @@ class TranslatePracticeScreen(ft.Container):
         sentences = self.controller.get_sentences()
 
         list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True)
-        for sentence in sentences:
-            text_input = ft.Text(f"1. {sentence}", size=16, weight="bold", expand=True)
+        for sentence_index, sentence in enumerate(sentences, start=1):
+            text_input = ft.Text(f"{sentence_index}. {sentence}", size=16, weight="bold", expand=True)
             text_field = ft.TextField(label="Enter translation", expand=True)
             new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True)
             list_view.controls.append(ft.Row(
@@ -150,7 +150,6 @@ class TranslatePracticeScreen(ft.Container):
         self.update_content(content=step_2_content, component_update=True, page_update=False)
 
     def submit_translations(self, event):
-        print("submit translations")
         text_value_translations = []
         no_translated = []
         for i in range(self.controller.number_of_sentences()):

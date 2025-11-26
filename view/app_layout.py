@@ -1,9 +1,9 @@
 from config import *
-from ui.widgets.header  import *
-from ui.widgets.navbar  import *
-from ui.widgets.footer  import *
-from ui.widgets.translate_practice import *
-from ui.widgets.home import *
+from view.widgets.header  import *
+from view.widgets.navbar  import *
+from view.widgets.footer  import *
+from view.widgets.translate_practice import *
+from view.widgets.home import *
 import flet as ft
 
 class AppLayout:

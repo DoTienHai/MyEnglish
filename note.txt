@@ -15,12 +15,15 @@ https://console.cloud.google.com/apis/api/translate.googleapis.com/quotas?projec
 - Cải thiện giao diện khi loading
 - Thêm cảnh báo nếu người dùng chưa dịch hết toàn bộ các câu
 
+27/11/2025
 - Xác định sesion đã được dịch hoàn thiện chưa
+- Sửa lại cấu trúc folder project
+- Sửa lại class DBManager
+
 - Làm đẹp các alert
 - Tạo class TextSelection
 - tạo thêm widget hiển thị danh sách các sesion
 - cải thiện khả năng dịch, tính toán cho app cá nhân có thể hoàn toàn sử dụng được bằng gg cloud API không để có thể đạt được chất lượng cao hơn.
-- Thiết kế lại hiệu ứng chờ cho người dùng
 - XỬ lý thêm từ loại cho từ mới
 - Xử lý trường hợp add trùng từ mới
-- Lỗi split dấu "." có lỗi: tên người nước ngoài có dấu "." có thể bị split thành 2 câu.
+- Lỗi split dấu "." có lỗi: tên người nước ngoài có dấu "." có thể bị split thành 2 câu, thêm trường hợp xuống dòng.
