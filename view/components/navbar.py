@@ -3,12 +3,12 @@ import flet as ft
 
 
 class NavBar(ft.Container):
-    def __init__(self,switch_screen_callback):
+    def __init__(self,switcher):
         width = 200
         buttons = []
         for screen in Screen:
             buttons.append(
-                ft.ElevatedButton(screen.value, on_click=lambda e, s=screen: switch_screen_callback(s.value), width=width)
+                ft.ElevatedButton(screen.value, on_click=lambda e, s=screen: switcher(s), width=width)
             )
 
         super().__init__(

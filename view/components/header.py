@@ -1,9 +1,10 @@
 from config import *
+from typing import Callable
 import flet as ft
 
 class Header(ft.Container):
-    def __init__(self, page: ft.Page):
-        self.page = page
+    def __init__(self, on_refresh: Callable[[], None]):
+        self.on_refresh = on_refresh
         super().__init__(
             content=ft.Row(
                 controls=[
@@ -20,4 +21,4 @@ class Header(ft.Container):
         )
 
     def refresh(self, event):
-        self.page.update()
+        self.on_refresh()

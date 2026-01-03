@@ -1,5 +1,11 @@
 https://console.cloud.google.com/apis/api/translate.googleapis.com/quotas?project=myenglish-477116
 
+oke tôi đang viết 1 app desktop cá nhân offline để luyên tập tiếng anh với các chức năng như sau: 
+- Chức năng luyện dịch: Người dùng có thể kiếm 1 đoạn văn tiếng anh từ bất đâu copy vào app. app sẽ chia thành từng câu đẻ người dùng dịch và chấm điểm, chấm tỉ lệ hoàn thành. Nếu câu có từ mới thì có thể note lại. Chức năng này đã hoàn thiện về mặt hoạt động rồi. Cải tiến thì tôi đang muốn tạo 1 giao diện để hiển thị danh sách các đoạn văn điểm số và trạng thái hoàn thiện của chúng. 
+- Học từ mới: Các từ vựng được thu thập từ hoạt động dịch bài sẽ được lưu lại và học qua flag card có tính số lần trả lời đúng và trả lời sai để theo dõi. Chức năng này tôi chưa triển khai gì mới chỉ có db của từ mới thô. 
+- Tracking tiến độ học tập: dừng lại ở mức ý tưởng App sử dụng flet để tạo giao diện, logic triển khai bằng python bình thường, có triển khai database. 
+Oke tôi đã mô tả sơ qua về trạng thái của app. Bạn hãy cho tôi thêm gợi ý có cần thêm chức năng gì không? Tôi muốn chủ yếu tập chung vào từ vựng và khả năng đọc hiểu. Với các chức năng chưa hoàn thiện hãy gợi ý cho tôi thêm có thể làm thêm gì? Hãy đóng 2 vai một là vai người dùng hai là vai teadlead
+
 17/11/2025
 - Xử lý add thêm từ mới
 - Add thêm việc dịch các từ mới ngay sau khi hòa thiện step 3
@@ -20,10 +26,76 @@ https://console.cloud.google.com/apis/api/translate.googleapis.com/quotas?projec
 - Sửa lại cấu trúc folder project
 - Sửa lại class DBManager
 
+01/12/2025
+- cải thiện khả năng dịch, tính toán cho app cá nhân có thể hoàn toàn sử dụng được bằng gg cloud API không để có thể đạt được chất lượng cao hơn.
+- start tạo view cho vocabulary
+
+02/12/2025
+- Triển khai singleton cho ScoredService
+- Thiết lập lại công thức tính điểm
+
+07/12/2025
+-  Có bug khi làm bài dịch liên tục, các đoạn văn sẽ nối tiếp nhau, các biến cũng đang được lưu lại giữa các lầm chạy
+
+            AppRouter
+                │
+        ┌───────┴────────┐
+IncreaseController   DecreaseController
+        │                     │
+   IncreaseView          DecreaseView
+        │                     │
+            CounterService
+                    │
+              CounterModel
+
+
+10/12/2025
+app/
+│
+├── main.py
+│
+├── views/
+│   ├── main_view.py
+│   ├── translate_view.py
+│   ├── vocabulary_view.py
+│   ├── setting_view.py
+│
+├── controllers/
+│   ├── app_controller.py
+│   ├── translate_controller.py
+│   ├── vocabulary_controller.py
+│   ├── setting_controller.py
+│
+├── services/
+│   ├── translate_service.py
+│   ├── vocabulary_service.py
+│   ├── setting_service.py
+│
+├── repositories/
+│   ├── db_connection.py
+│   ├── session_repository.py
+│   ├── vocabulary_repository.py
+│   ├── setting_repository.py
+│
+└── models/
+    ├── session_model.py
+    ├── sentence_model.py
+    ├── vocabulary_model.py
+    ├── setting_model.py
+
+
 - Làm đẹp các alert
 - Tạo class TextSelection
 - tạo thêm widget hiển thị danh sách các sesion
-- cải thiện khả năng dịch, tính toán cho app cá nhân có thể hoàn toàn sử dụng được bằng gg cloud API không để có thể đạt được chất lượng cao hơn.
 - XỬ lý thêm từ loại cho từ mới
 - Xử lý trường hợp add trùng từ mới
 - Lỗi split dấu "." có lỗi: tên người nước ngoài có dấu "." có thể bị split thành 2 câu, thêm trường hợp xuống dòng.
+- highlight từ mới ngay trong đoạn văn
+- flashcard cho việc học từ vựng
+- phân loại sesion theo chủ đề
+- flashcard theo các chế độ Random, ưu tiên từ sai nhiều, những từ lâu chưa gặp
+- Bảng xếp hạng các từ hay sai
+- Huy hiệu streak số ngày học liên tiếp
+- Thêm chức năng theo dõi tiến độ học tập: số từ mới được học trong ngày, thời gian học trong ngày, thời gian dịch đoạn văn
+- Một số các game để học từ mới: ghép chữ cái --> từ mới, matching từ và nghĩa
+- Vấn đề user chuyển máy có thể dùng lại dữ liệu

@@ -1,9 +1,13 @@
 import flet as ft
-from view.app_layout import main_layout
-from model.db_manager import DatabaseManager
+from view.main_app_layout import *
+from repositories.db_connect import DBConnect
+from repositories.db_init import DBInit
 from view.components.Loading import *
 
-if __name__ == "__main__":
-    DatabaseManager(db_path="./app_data.db")
+def main(): 
+    db = DBConnect(db_path="app_data.db")
+    DBInit(db).create_tables()
     ft.app(target=main_layout)
-    
+
+if __name__ == "__main__":
+    main()

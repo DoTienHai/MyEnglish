@@ -1,12 +1,16 @@
 import flet as ft
 import threading
+from view.services.Alert import AlertService
 from view.components.Loading import *
-from controller.translate_practice_controller import TranslatePracticeController
+# from controller.translate_practice_controller import TranslatePracticeController
+from view_model.translate_practice_vm import TranslatePracticeViewModel
 
 class TranslatePracticeScreen(ft.Container):
-    def __init__(self, page: ft.Page):
-        self.page = page
-        self.controller = TranslatePracticeController()
+    def __init__(self, translate_practice_vm: TranslatePracticeViewModel, alert_service: AlertService):
+        self.translate_practice_vm = translate_practice_vm
+        self.alert_service = alert_service
+        
+        # self.controller = TranslatePracticeController()
         
         self.title = ft.TextField(
                     label="Enter title of session",
@@ -25,6 +29,7 @@ class TranslatePracticeScreen(ft.Container):
                     expand=True,
                 )
         
+        self.session_id = None
         self.translation_text_fields = []
         self.new_words_fields = []
         self.content = None
@@ -58,12 +63,11 @@ class TranslatePracticeScreen(ft.Container):
     def update_content(self, content=None, component_update=False, page_update=False, clear_content=False):
         if content:
             if self.content and clear_content:
-                self.content.controls.clear()
+                self.content.clean()
             self.content = content
         if component_update:
             self.update()
-        if page_update:
-            self.page.update()
+
 
     # ---------------- STEP 1: INPUT TEXT ----------------
     def build_step_1(self):
@@ -98,15 +102,15 @@ class TranslatePracticeScreen(ft.Container):
             alert = ft.AlertDialog(
                 title=ft.Text("Input Error"),
                 content=ft.Text("Please enter some text to translate."),
-                actions=[ft.TextButton("OK", on_click=lambda e: self.page.close(alert))],
+                actions=[ft.TextButton("OK", on_click=lambda e: self.alert_service.close(alert))],
             )
-            self.page.open(alert)
+            self.alert_service.open(alert)
         else:
             loading = Loading(message="Preparing, please wait...")
             self.update_content(content=loading, component_update=True, page_update=False)
 
             def run_processing():
-                self.controller.process_input(self.title.value, self.ref_source.value, self.input_text.value)
+                self.session_id = self.controller.process_input(self.title.value, self.ref_source.value, self.input_text.value)
                 self.build_step_2()
 
             threading.Thread(target=run_processing).start()
@@ -116,8 +120,8 @@ class TranslatePracticeScreen(ft.Container):
         sentences = self.controller.get_sentences()
 
         list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True)
-        for sentence_index, sentence in enumerate(sentences, start=1):
-            text_input = ft.Text(f"{sentence_index}. {sentence}", size=16, weight="bold", expand=True)
+        for sentence in sentences:
+            text_input = ft.Text(f"{sentence['sentence_index']}. {sentence['source_sentence']}", size=16, weight="bold", expand=True)
             text_field = ft.TextField(label="Enter translation", expand=True)
             new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True)
             list_view.controls.append(ft.Row(
@@ -167,10 +171,10 @@ class TranslatePracticeScreen(ft.Container):
                                 ft.Text(f"{",".join(no_translated)}", text_align=ft.TextAlign.CENTER, expand=True),
                                 ft.Text("Do you want to submit?", text_align=ft.TextAlign.CENTER, expand=True),],
                     spacing=10, height=150, width=300, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-                actions=[ft.TextButton("Cancel", on_click=lambda e: self.page.close(alert)),
-                         ft.TextButton("Submit", on_click=lambda e: (self.page.close(alert), self.process_translations(text_value_translations, new_words_value_translations)))],
+                actions=[ft.TextButton("Cancel", on_click=lambda e: self.alert_service.close(alert)),
+                         ft.TextButton("Submit", on_click=lambda e: (self.alert_service.close(alert), self.process_translations(text_value_translations, new_words_value_translations)))],
             )
-            self.page.open(alert)
+            self.alert_service.open(alert)
         else:
             self.process_translations(text_value_translations, new_words_value_translations)
     
