@@ -23,4 +23,15 @@ class SentenceRepository(BaseRepository):
     def get(self, id: int) -> Sentence:
         return super().get(id)
     
+    def get_by_session_id_and_sentence_index(
+        self, session_id: int, sentence_index: int
+    ) -> Sentence | None:
+        sql = """
+        SELECT *
+        FROM sentences
+        WHERE session_id = ? AND sentence_index = ?
+        """
+        row = self.db.fetch_one(sql, (session_id, sentence_index))
+        return self.to_entity(row) if row else None
+    
     

@@ -1,5 +1,6 @@
 import threading
 from enum import Enum
+from model.sentence import Sentence
 from service.session_service import SessionService
 from service.sentence_service import SentenceService
 from service.vocabulary_service import VocabularyService
@@ -40,6 +41,7 @@ class TranslatePracticeViewModel:
         self.sentences_translated_by_translator = []
         self.sentence_translations = []
         self.new_words = []
+        self.scores = []
         
     def switch_step(self, new_step: TRANSLATE_PRACTICE_STEP):
         self.step.value = new_step
@@ -83,19 +85,19 @@ class TranslatePracticeViewModel:
         
     def process_translations(self):
         un_complete = 0
-        scores = []
         for idx, translation in enumerate(self.sentence_translations, start=1):
             if translation.strip() == "" or translation is None:
                 un_complete += 1
                 score = 0
             else:
                 score = self.score_service.score(translation, self.sentences_translated_by_translator[idx-1])
-            scores.append(score)
-            self.sentence_service.update_sentence(sentence_id=idx-1,translated_sentence=translation, score=score)
-        session_scored = round(sum(scores)/len(scores), 2)
+            self.scores.append(score)
+            sentence = self.sentence_service.get_sentence_by_session_id_and_sentence_index(self.session_id, idx)
+            self.sentence_service.update_sentence(sentence_id=sentence.id,translated_sentence=translation, score=score)
+        session_scored = round(sum(self.scores)/len(self.scores), 2)
         session_complete = round((len(self.input_sentences) - un_complete)*100/len(self.input_sentences) , 2)
         self.session_service.update_session(session_id=self.session_id, score=session_scored, completed=session_complete)
-        return scores
+        return self.scores
 
     def process_new_words(self):
         for idx, new_words in enumerate(self.new_words, start=1):
@@ -116,10 +118,11 @@ class TranslatePracticeViewModel:
         self.ref_source = ""
         self.session_id = None
         self.text_translated_by_translator = ""
-        self.input_sentences = []
-        self.sentences_translated_by_translator = []
-        self.sentence_translations = []
-        self.new_words = []
+        self.input_sentences.clear()
+        self.sentences_translated_by_translator.clear()
+        self.sentence_translations.clear()
+        self.new_words.clear()
+        self.scores.clear()
         self.switch_step(TRANSLATE_PRACTICE_STEP.STEP_1_INPUT_TEXT)
     
         

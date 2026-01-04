@@ -57,6 +57,9 @@ class SentenceService:
     def count_sentences_by_session_id(self, session_id:int) -> int:
         count = self.sentence_repo.count_by(session_id=session_id)
         return count
+
+    def get_sentence_by_session_id_and_sentence_index(self, session_id:int, sentence_index:int) -> Sentence:
+        return self.sentence_repo.get_by_session_id_and_sentence_index(session_id, sentence_index)
     
 if __name__ == "__main__":
     sentence_service = SentenceService()
