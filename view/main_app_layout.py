@@ -6,17 +6,19 @@ from service.translation_service import TranslationService
 from service.scoring_service import ScoringService
 from service.vocabulary_service import VocabularyService
 from view_model.translate_practice_vm import *
+from view_model.vocabulary_vm import *
 from view.components.header  import *
 from view.components.navbar  import *
 from view.components.footer  import *
 from view.screens.translate_practice_view import *
-from view.screens.vocabulary import *
-from view.screens.home import *
+from view.screens.vocabulary_view import *
+from view.screens.home_view import *
 import flet as ft
 
 class MainAppLayout:
     def __init__(self, page: ft.Page):
         self.page = page
+        self.current_screen = Screen.HOME
 
         self.alert_service = AlertService(page)
         self.session_service = SessionService()
@@ -30,12 +32,12 @@ class MainAppLayout:
                                                                  vocabulary_service=self.vocabulary_service,
                                                                  translator=self.translator,
                                                                  score_service=self.score_service)
+        self.vocabulary_vm = VocabularyViewModel(vocabulary_service=self.vocabulary_service)
 
-        self.current_screen = Screen.HOME
         self.home_screen = HomeScreen()
         self.translate_practice_screen = TranslatePracticeScreen(translate_practice_vm=self.translate_practice_vm, 
                                                                  alert_service=self.alert_service,)
-        self.vocabulary_screen = VocabularyScreen()
+        self.vocabulary_screen = VocabularyScreen(vocabulary_vm=self.vocabulary_vm)
 
         self.header =  Header(on_refresh=self.refresh)
         self.nav_bar = NavBar(switcher=self.switch_screen)

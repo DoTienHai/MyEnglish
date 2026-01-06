@@ -1,6 +1,6 @@
 import flet as ft
 from view.services.Alert import AlertService
-from view.components.Loading import Loading
+from view.components.loading import Loading
 from view_model.translate_practice_vm import *
 
 class TranslatePracticeScreen(ft.Container):
@@ -85,7 +85,6 @@ class TranslatePracticeScreen(ft.Container):
                 ft.ElevatedButton("Submit Translations", on_click=lambda e : self.translate_practice_vm.handle_step_2(
                     sentence_translations=[tf.value for tf in translation_text_fields],
                     new_words_list=[nwf.value for nwf in new_words_fields])),
-                ft.ElevatedButton("Back", on_click=self.build_step_1),
             ],
             alignment=ft.MainAxisAlignment.END,
             spacing=10,

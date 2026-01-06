@@ -2,6 +2,7 @@ from datetime import datetime
 from repositories.db_connect import DBConnect
 from repositories.vocabulary_repo import VocabularyRepository
 from model.vocabulary import Vocabulary
+import random
 
 class VocabularyService:
     def __init__(self):
@@ -35,3 +36,9 @@ class VocabularyService:
             vocabulary.wrong_count = wrong_count
         
         self.vocab_repo.update(vocabulary)
+        
+    def random_vocabulary(self) -> list[Vocabulary]:
+        all_vocabularies = self.vocab_repo.all()
+        if len(all_vocabularies) == 0:
+            return None
+        return random.choice(all_vocabularies)

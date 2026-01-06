@@ -2,7 +2,6 @@ import flet as ft
 from view.main_app_layout import *
 from repositories.db_connect import DBConnect
 from repositories.db_init import DBInit
-from view.components.Loading import *
 
 def main(): 
     db = DBConnect(db_path="app_data.db")
