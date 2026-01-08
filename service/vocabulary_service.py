@@ -26,7 +26,7 @@ class VocabularyService:
         return vocab_id
     
     def update_vocabulary(self, vocab_id: int, correct_count: int = None, wrong_count: int = None):
-        vocabulary = (Vocabulary)(self.vocab_repo.get(vocab_id))
+        vocabulary = self.vocab_repo.get(vocab_id)
         if not vocabulary:
             raise ValueError(f"Vocabulary with id {vocab_id} does not exist.")
         
