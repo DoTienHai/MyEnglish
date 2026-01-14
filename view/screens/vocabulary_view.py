@@ -2,6 +2,7 @@ import flet as ft
 from model.vocabulary import Vocabulary
 from view_model.vocabulary_vm import VocabularyViewModel, VOCABULARY_STEP
 from view.components.flash_card import FlashCard
+from view.theme import *
 
 
 class VocabularyScreen(ft.Container):
@@ -25,7 +26,7 @@ class VocabularyScreen(ft.Container):
                 ft.Text("Example:", size=16, weight=ft.FontWeight.BOLD,),
                 ft.Text(spans=[
                     ft.TextSpan(parts[0]),
-                    ft.TextSpan(self.vocabulary_vm.current_vocabulary.word, style=ft.TextStyle(weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_400)),
+                        ft.TextSpan(self.vocabulary_vm.current_vocabulary.word, style=ft.TextStyle(weight=ft.FontWeight.BOLD, color=SUCCESS)),
                     ft.TextSpan(parts[1]),
                     ], size=16, italic=True),
                 ft.Column(
@@ -46,9 +47,9 @@ class VocabularyScreen(ft.Container):
         results = []
         for meaning in meanings:
             if meaning == self.vocabulary_vm.current_vocabulary.meaning:
-                results.append(ft.Text(meaning + " ✔", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN))
+                results.append(ft.Text(meaning + " ✔", size=16, weight=ft.FontWeight.BOLD, color=SUCCESS))
             else:
-                results.append(ft.Text(meaning + " ✘", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.RED))
+                results.append(ft.Text(meaning + " ✘", size=16, weight=ft.FontWeight.BOLD, color=ERROR))
         self.content = ft.Column(
             controls=[
                 ft.Text(self.vocabulary_vm.current_vocabulary.word, size=18, weight=ft.FontWeight.BOLD,),
@@ -56,7 +57,7 @@ class VocabularyScreen(ft.Container):
                 ft.Text("Example:", size=16, weight=ft.FontWeight.BOLD,),
                 ft.Text(spans=[
                     ft.TextSpan(parts[0]),
-                    ft.TextSpan(self.vocabulary_vm.current_vocabulary.word, style=ft.TextStyle(weight=ft.FontWeight.BOLD, color=ft.Colors.GREEN_400)),
+                    ft.TextSpan(self.vocabulary_vm.current_vocabulary.word, style=ft.TextStyle(weight=ft.FontWeight.BOLD, color=SUCCESS)),
                     ft.TextSpan(parts[1]),
                     ], size=16, italic=True),
                 ft.Column(

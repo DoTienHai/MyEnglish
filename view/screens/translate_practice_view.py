@@ -2,6 +2,7 @@ import flet as ft
 from view.services.Alert import AlertService
 from view.components.loading import Loading
 from view_model.translate_practice_vm import *
+from view.theme import *
 
 class TranslatePracticeScreen(ft.Container):
     def __init__(self, translate_practice_vm: TranslatePracticeViewModel, alert_service: AlertService):
@@ -66,8 +67,8 @@ class TranslatePracticeScreen(ft.Container):
         list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True)
         sentences = self.translate_practice_vm.input_sentences
         for sentence in sentences:
-            sentence_input = ft.Text(f"{sentences.index(sentence) + 1}. {sentence}", size=16, weight="bold", expand=True)
-            text_field = ft.TextField(label="Enter translation", expand=True)
+            sentence_input = ft.Text(f"{sentences.index(sentence) + 1}. {sentence}", size=16, weight="bold", expand=True, selectable=True)
+            text_field = ft.TextField(label="Enter translation", expand=True, multiline=True)
             new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True)
             list_view.controls.append(ft.Row(
                 controls=[
@@ -105,8 +106,8 @@ class TranslatePracticeScreen(ft.Container):
                 controls=[
                     ft.Text(f"Source sentence: {self.translate_practice_vm.input_sentences[index]}", size=16, weight="bold"),
                     ft.Text(f"Your Translation: {self.translate_practice_vm.sentence_translations[index]}", size=16),
-                    ft.Text(f"Correct Translation: {self.translate_practice_vm.sentences_translated_by_translator[index]}", size=16, color=ft.Colors.GREEN),
-                    ft.Text(f"Score: {self.translate_practice_vm.scores[index]}.", size=16, color=ft.Colors.GREEN),
+                    ft.Text(f"Correct Translation: {self.translate_practice_vm.sentences_translated_by_translator[index]}", size=16, color=SUCCESS),
+                    ft.Text(f"Score: {self.translate_practice_vm.scores[index]}.", size=16, color=SUCCESS),
                     ft.Divider(),
                 ],
                 spacing=5,

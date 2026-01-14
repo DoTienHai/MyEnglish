@@ -5,11 +5,13 @@ from service.sentence_service import SentenceService
 from service.translation_service import TranslationService
 from service.scoring_service import ScoringService
 from service.vocabulary_service import VocabularyService
+from view_model.home_vm import *
 from view_model.translate_practice_vm import *
 from view_model.vocabulary_vm import *
 from view.components.header  import *
 from view.components.navbar  import *
 from view.components.footer  import *
+from view.theme import *
 from view.screens.translate_practice_view import *
 from view.screens.vocabulary_view import *
 from view.screens.home_view import *
@@ -27,6 +29,10 @@ class MainAppLayout:
         self.translator = TranslationService()
         self.score_service = ScoringService()
         
+        self.home_vm = HomeViewModel(session_service=self.session_service,
+                                     sentence_service=self.sentence_service,
+                                     vocabulary_service = self.vocabulary_service,
+                                     )
         self.translate_practice_vm = TranslatePracticeViewModel(session_service=self.session_service,
                                                                  sentence_service=self.sentence_service,
                                                                  vocabulary_service=self.vocabulary_service,
@@ -34,7 +40,7 @@ class MainAppLayout:
                                                                  score_service=self.score_service)
         self.vocabulary_vm = VocabularyViewModel(vocabulary_service=self.vocabulary_service)
 
-        self.home_screen = HomeScreen()
+        self.home_screen = HomeScreen(home_vm=self.home_vm, switcher=self.switch_screen)
         self.translate_practice_screen = TranslatePracticeScreen(translate_practice_vm=self.translate_practice_vm, 
                                                                  alert_service=self.alert_service,)
         self.vocabulary_screen = VocabularyScreen(vocabulary_vm=self.vocabulary_vm)
@@ -63,12 +69,16 @@ class MainAppLayout:
         )
 
     # ---------------- SWITCH SCREEN ----------------
-    def switch_screen(self, screen: Screen):
+    def switch_screen(self, screen: Screen, session_id: int = None):
         self.current_screen = screen
         if screen == Screen.HOME:
+            self.home_screen.render()
             self.body_container.content = self.home_screen
         elif screen == Screen.TRANSLATE:
             self.body_container.content = self.translate_practice_screen
+            if session_id is not None:
+                self.translate_practice_vm.load_session(session_id)
+                self.translate_practice_vm.switch_step(TRANSLATE_PRACTICE_STEP.STEP_2_TRANSLATE_TEXT)
         elif screen == Screen.VOCABULARY:
             self.body_container.content = self.vocabulary_screen
         else:
@@ -87,6 +97,8 @@ class MainAppLayout:
 
 def main_layout(page: ft.Page):
     page.title = APP_NAME
+    # apply milky/opaque white theme
+    page.bgcolor = BG_COLOR
     app = MainAppLayout(page)
     page.add(app.build())
 

@@ -1,4 +1,5 @@
 import flet as ft
+from view.theme import *
 
 class Loading(ft.Container):
     def __init__(self, message="Loading..."):
@@ -8,13 +9,13 @@ class Loading(ft.Container):
         self.opacity = 1
         self.animate_opacity = 300
         self.expand = True
-        self.bgcolor = "#F0F0F0"
+        self.bgcolor = BG_COLOR
 
         # Nội dung hiển thị
         self.content = ft.Column(
             controls=[
                 ft.Image("assets\\Loading.gif", height=160, width=160, repeat=True),
-                ft.Text(message, color=ft.Colors.BLACK, size=18),
+                ft.Text(message, color=TEXT_COLOR, size=18),
             ],
             expand=True,
             alignment=ft.MainAxisAlignment.CENTER,

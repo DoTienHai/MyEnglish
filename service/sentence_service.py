@@ -61,6 +61,9 @@ class SentenceService:
     def get_sentence_by_session_id_and_sentence_index(self, session_id:int, sentence_index:int) -> Sentence:
         return self.sentence_repo.get_by_session_id_and_sentence_index(session_id, sentence_index)
     
+    def get_avg_score(self):
+        return self.sentence_repo.get_avg_score()
+    
 if __name__ == "__main__":
     sentence_service = SentenceService()
     sentences = sentence_service.count_sentences_by_session_id(1)

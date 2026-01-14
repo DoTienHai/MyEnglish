@@ -22,3 +22,19 @@ class VocabularyRepository(BaseRepository):
         
     def get(self, id: int) -> Vocabulary:
         return super().get(id)
+    
+    def count_vocabulary_grouped_by_date(self, from_date: str):
+        query = f"""
+            SELECT
+                date(created_at) AS day,
+                COUNT(*) AS total
+            FROM {self.table_name}
+            WHERE date(created_at) >= date(?)
+            GROUP BY date(created_at)
+            ORDER BY day
+        """
+        return self.db.fetch_all(query, (from_date,))
+
+
+    
+    

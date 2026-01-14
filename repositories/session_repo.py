@@ -22,6 +22,21 @@ class SessionRepository(BaseRepository):
         
     def get(self, id: int) -> Session:
         return super().get(id)
+    
+    def get_session_progress_summary(self):
+        query = f"SELECT \
+                    SUM(CASE WHEN completed = 100 THEN 1 ELSE 0 END), \
+                    SUM(CASE WHEN completed != 100 AND completed != 0 THEN 1 ELSE 0 END), \
+                    SUM(CASE WHEN completed = 0 THEN 1 ELSE 0 END) \
+                FROM {self.table_name}"
+        completed, in_progress, open = self.db.fetch_one(query)
+        return completed, in_progress, open
+
+    def get_not_done_sessions(self):
+        query = f"SELECT * FROM {self.table_name} WHERE completed != 100"
+        rows = self.db.fetch_all(query)
+        return [self.to_entity(row) for row in rows]
+    
         
 if __name__ == "__main__":
     db = DBConnect("test.db")

@@ -34,4 +34,11 @@ class SentenceRepository(BaseRepository):
         row = self.db.fetch_one(sql, (session_id, sentence_index))
         return self.to_entity(row) if row else None
     
+    def get_avg_score(self):
+        sql = """
+        SELECT AVG(score) FROM sentences
+        """
+        row = self.db.fetch_one(sql)
+        return row[0]
+    
     

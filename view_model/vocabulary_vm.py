@@ -46,4 +46,4 @@ class VocabularyViewModel:
             self.vocabulary_service.update_vocabulary(self.current_vocabulary.id, 
                                                       correct_count = self.current_vocabulary.correct_count,
                                                       wrong_count = self.current_vocabulary.wrong_count + 1)
-        self.switch_step(VOCABULARY_STEP.ANSWER_RESULT)
+        self.switch_step(VOCABULARY_STEP.ANSWER_RESULT) 

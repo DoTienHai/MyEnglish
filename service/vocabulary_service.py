@@ -42,3 +42,6 @@ class VocabularyService:
         if len(all_vocabularies) == 0:
             return None
         return random.choice(all_vocabularies)
+    
+    def count_vocabulary_grouped_by_date(self, from_date: str) -> list[tuple[str, int]]:
+        return self.vocab_repo.count_vocabulary_grouped_by_date(from_date)

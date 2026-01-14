@@ -1,5 +1,6 @@
 from config import *
 import flet as ft
+from view.theme import *
 
 
 class NavBar(ft.Container):
@@ -13,7 +14,7 @@ class NavBar(ft.Container):
 
         super().__init__(
             width=width,
-            bgcolor=ft.Colors.BLUE_GREY_50,
+            bgcolor=NAV_BG,
             padding=ft.padding.all(10),
             content=ft.Column(
                 controls=buttons,
@@ -25,6 +26,6 @@ class NavBar(ft.Container):
     def highlight_active(self, current_screen):
         for btn in self.content.controls[:]:
             btn.style = ft.ButtonStyle(bgcolor=None)
-            if btn.text == current_screen:
-                btn.style = ft.ButtonStyle(bgcolor=ft.Colors.BLUE_100)
+            if btn.text == current_screen.value:
+                btn.style = ft.ButtonStyle(bgcolor=ACCENT)
         self.update()

@@ -53,7 +53,7 @@ class ScoringService:
 
         similarity = util.pytorch_cos_sim(emb1, emb2).item()
         # print(f"Sentence 1: {sentence1}\nSentence 2: {sentence2}\nSimilarity: {similarity}")Nước được tạo thành từ hydro và oxy.
-        score = self.exp_score(similarity=max(similarity, 0), max_score=max_score, k=0.25)
+        score = self.exp_score(similarity=max(similarity, 0), max_score=max_score, k=0.5)
         # score = similarity
         return score
 

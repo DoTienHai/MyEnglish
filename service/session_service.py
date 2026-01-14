@@ -35,3 +35,12 @@ class SessionService:
             session.score = score
         
         self.session_repo.update(session)
+    
+    def get_session_progress_summary(self):
+        return self.session_repo.get_session_progress_summary()
+    
+    def get_not_done_sessions(self):
+        return self.session_repo.get_not_done_sessions()
+    
+    def get_session_by_id(self, session_id: int) -> Session:
+        return self.session_repo.get(session_id)

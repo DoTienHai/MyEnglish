@@ -42,7 +42,21 @@ class TranslatePracticeViewModel:
         self.sentence_translations = []
         self.new_words = []
         self.scores = []
-        
+    
+    def load_session(self, session_id: int):
+        session = self.session_service.get_session_by_id(session_id)
+        if session is None:
+            return False
+        self.title = session.title
+        self.input_text = session.source_text
+        self.ref_source = session.source_reference
+        self.session_id = session.id
+        self.input_sentences = [sentence.source_sentence for sentence in self.sentence_service.get_sentence_by_session_id(session_id)]
+        self.sentences_translated_by_translator = [sentence.cloud_translated_sentence for sentence in self.sentence_service.get_sentence_by_session_id(session_id)]
+        self.sentence_translations = [sentence.translated_sentence for sentence in self.sentence_service.get_sentence_by_session_id(session_id)]
+        self.step_1_done.set()
+        return True
+
     def switch_step(self, new_step: TRANSLATE_PRACTICE_STEP):
         self.step.value = new_step
         self.step.notify(new_step)
