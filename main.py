@@ -4,7 +4,7 @@ from repositories.db_connect import DBConnect
 from repositories.db_init import DBInit
 
 def main(): 
-    db = DBConnect(db_path="app_data.db")
+    db = DBConnect(db_path="data.db")
     DBInit(db).create_tables()
     ft.app(target=main_layout)
 

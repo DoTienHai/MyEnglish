@@ -25,24 +25,24 @@ class ScoringService:
 
     def exp_score(self, similarity, max_score=10, k=1):
         """
-        similarity: giá trị từ 0 -> 1
-        max_score: điểm tối đa
-        k: độ cong của hàm exponential
+        similarity: value from 0 to 1
+        max_score: maximum score
+        k: curve steepness of exponential function
         """
-        # giới hạn similarity trong [0,1]
+        # Clamp similarity to [0, 1]
         if similarity < 0:
             similarity = 0
         if similarity > 1:
             similarity = 1
 
-        # tính score theo công thức chuẩn hóa exponential
+        # Calculate score using normalized exponential formula
         normalized = (math.exp(k * similarity) - 1) / (math.exp(k) - 1)
         score = round(normalized * max_score, 2)
         return score
 
     def score(self, sentence1: str, sentence2: str, max_score=10) -> float:
         """
-        Trả về điểm similarity giữa 2 câu (0 → max_score)
+        Return similarity score between two sentences (0 to max_score).
         """
         if not sentence1 or not sentence2:
             return 0.0
@@ -52,8 +52,8 @@ class ScoringService:
         emb2 = model.encode(sentence2, convert_to_tensor=True)
 
         similarity = util.pytorch_cos_sim(emb1, emb2).item()
-        # print(f"Sentence 1: {sentence1}\nSentence 2: {sentence2}\nSimilarity: {similarity}")Nước được tạo thành từ hydro và oxy.
-        score = self.exp_score(similarity=max(similarity, 0), max_score=max_score, k=0.5)
+        score = self.exp_score(similarity=max(similarity, 0),
+                                max_score=max_score, k=0.5)
         # score = similarity
         return score
 

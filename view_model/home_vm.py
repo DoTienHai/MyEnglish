@@ -1,40 +1,89 @@
-import datetime
 from datetime import datetime, timedelta
-from service.session_service import SessionService
+from service.paragraph_service import ParagraphService
 from service.sentence_service import SentenceService
 from service.vocabulary_service import VocabularyService
 
+
 class HomeViewModel:
-    def __init__(self, session_service: SessionService, sentence_service: SentenceService, vocabulary_service: VocabularyService):
-        self.session_service = session_service
+    def __init__(self, paragraph_service: ParagraphService, sentence_service: SentenceService, vocabulary_service: VocabularyService):
+        self.paragraph_service = paragraph_service
         self.sentence_service = sentence_service
         self.vocabulary_service = vocabulary_service
 
-    def get_session_progress_summary(self):
-        return self.session_service.get_session_progress_summary()
-    
+    def get_paragraph_progress_summary(self):
+        return self.paragraph_service.get_paragraph_progress_summary()
+
     def count_vocabulary_by_date(self, number_of_days: int):
-        date = (datetime.now() - timedelta(days=number_of_days)).date().isoformat()
-        data_raw = self.vocabulary_service.count_vocabulary_grouped_by_date(date)
+        date = (datetime.now() - timedelta(days=number_of_days)
+                ).date().isoformat()
+        data_raw = self.vocabulary_service.count_vocabulary_by_date(date)
         data = {}
         for number in range(number_of_days):
-            date = (datetime.now() - timedelta(days=number_of_days-number)).date().isoformat()
+            date = (datetime.now() -
+                    timedelta(days=number_of_days-number)).date().isoformat()
             data[date] = 0
         for item in data_raw:
             data[item[0]] = item[1]
         return data
-    
+
     def get_avg_score(self):
+        if self.sentence_service.get_avg_score() is None:
+            return 0.0
         return round(self.sentence_service.get_avg_score(), 2)
-    
-    def get_not_done_sessions(self):
+
+    def get_incomplete_paragraphs(self):
         data = []
-        for session in self.session_service.get_not_done_sessions():
+        for paragraph in self.paragraph_service.get_incomplete_paragraphs():
             data.append({
-                "id": session.id,
-                "title": session.title,
-                "completed": session.completed,
-                "score": session.score,
-                "created_at": session.created_at
+                "id": paragraph.id,
+                "title": paragraph.title,
+                "completed": paragraph.completed,
+                "score": paragraph.score,
+                "created_at": paragraph.created_at
             })
         return data
+
+    def get_all_vocabulary(self) -> list[dict]:
+        all_vocabulary = self.vocabulary_service.get_all_vocabulary()
+        data = []
+        for vocab in all_vocabulary:
+            data.append({
+                "id": vocab.id,
+                "word": vocab.word,
+                "part_of_speech": vocab.part_of_speech,
+                "vi_meaning": vocab.vi_meaning,
+                "eng_description": vocab.eng_description,
+                "example": vocab.example,
+                "correct_count": vocab.correct_count,
+                "wrong_count": vocab.wrong_count,
+            })
+        return data
+
+    def create_vocabulary(self, payload: dict):
+        print("Creating vocabulary with payload:", payload)
+        word = payload.get("word", "")
+        part_of_speech = payload.get("part_of_speech", "")
+        vi_meaning = payload.get("vi_meaning", "")
+        eng_description = payload.get("eng_description", "")
+        example = payload.get("example", "")
+        self.vocabulary_service.create_vocabulary(
+            word, part_of_speech, vi_meaning, eng_description, example)
+
+    def delete_vocabulary(self, payload: dict):
+        print("Deleting vocabulary with payload:", payload)
+        vocab_id = payload.get("id")
+        self.vocabulary_service.delete_vocabulary(vocab_id)
+
+    def update_vocabulary(self, payload: dict):
+        print("Updating vocabulary with payload:", payload)
+        vocab_id = payload.get("id")
+        word = payload.get("word")
+        part_of_speech = payload.get("part_of_speech")
+        vi_meaning = payload.get("vi_meaning")
+        eng_description = payload.get("eng_description")
+        example = payload.get("example")
+        note = payload.get("note")
+        correct_count = payload.get("correct_count")
+        wrong_count = payload.get("wrong_count")
+        self.vocabulary_service.update_vocabulary(
+            vocab_id, word, part_of_speech, vi_meaning, eng_description, example, note, correct_count, wrong_count)

@@ -5,16 +5,16 @@ class Loading(ft.Container):
     def __init__(self, message="Loading..."):
         super().__init__()
 
-        # Hiệu ứng fade
+        # Fade effect
         self.opacity = 1
         self.animate_opacity = 300
         self.expand = True
         self.bgcolor = BG_COLOR
 
-        # Nội dung hiển thị
+        # Display content
         self.content = ft.Column(
             controls=[
-                ft.Image("assets\\Loading.gif", height=160, width=160, repeat=True),
+                ft.Image("assets\\Loading.gif", repeat=True),
                 ft.Text(message, color=TEXT_COLOR, size=18),
             ],
             expand=True,

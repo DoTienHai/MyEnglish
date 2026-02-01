@@ -28,7 +28,7 @@ class TranslationService:
         # Lock key_path at class-level if not set
         if type(self)._key_path is None:
             type(self)._key_path = key_path
-        # Load credentials từ file JSON (once per process)
+        # Load credentials from JSON file (once per process)
         credentials = service_account.Credentials.from_service_account_file(type(self)._key_path)
         pid = self._get_project_id_from_json(type(self)._key_path)
         # Cache project_id at class level and keep instance attribute for backward compatibility
@@ -61,7 +61,7 @@ class TranslationService:
                 )
                 return response.translations[0].translated_text
             except Exception as e:
-                print(f"Lỗi dịch lần {attempt+1}: {e}")
+                print(f"Translation error attempt {attempt+1}: {e}")
                 time.sleep(1)
         return "[Translation failed]"
 

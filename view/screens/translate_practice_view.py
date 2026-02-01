@@ -20,13 +20,13 @@ class TranslatePracticeScreen(ft.Container):
 
     def build_step_1(self):
         title_text_field = ft.TextField(
-                    label="Enter title of session",
+                    label="Enter title of paragraph",
                     multiline=False,
                     height=50,
                     width=200,
                 )
         ref_source_text_field = ft.TextField(
-                    label="Enter reference of session",
+                    label="Enter reference of paragraph",
                     multiline=False,
                     expand=True
                 )
@@ -69,7 +69,7 @@ class TranslatePracticeScreen(ft.Container):
         for sentence in sentences:
             sentence_input = ft.Text(f"{sentences.index(sentence) + 1}. {sentence}", size=16, weight="bold", expand=True, selectable=True)
             text_field = ft.TextField(label="Enter translation", expand=True, multiline=True)
-            new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True)
+            new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True, multiline=True)
             list_view.controls.append(ft.Row(
                 controls=[
                     sentence_input,

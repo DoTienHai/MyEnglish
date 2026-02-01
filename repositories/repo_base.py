@@ -1,10 +1,11 @@
 from repositories.db_connect import DBConnect
 
+# Base repository class providing generic CRUD operations
 class BaseRepository:
-    table_name = None          # bắt buộc class con gán
-    primary_key = "id"         # mặc định
-    columns = []               # danh sách cột trong bảng
-    model_class = None         # class model tương ứng
+    table_name = None          # required to be set by subclass
+    primary_key = "id"         # default
+    columns = []               # list of columns in the table
+    model_class = None         # corresponding model class
 
     def __init__(self, db: DBConnect):
         self.db = db
@@ -12,7 +13,6 @@ class BaseRepository:
     # ---------------------------
     # CRUD
     # ---------------------------
-
     def create(self, entity):
         cols = ", ".join(self.columns)
         placeholders = ", ".join(["?"] * len(self.columns))
@@ -76,12 +76,13 @@ class BaseRepository:
     # ---------------------------
     # Conversion helpers
     # ---------------------------
-
+    # Convert a database row to an entity/model instance
     def to_entity(self, row):
         if row is None:
             return None
         return self.model_class(*row)
-
+    
+    # Convert an entity/model instance to a list of values for database operations
     def to_row(self, entity):
         return [getattr(entity, col) for col in self.columns]
 

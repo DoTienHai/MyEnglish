@@ -3,14 +3,15 @@ from model.vocabulary import Vocabulary
 from repositories.db_connect import DBConnect
 
 class VocabularyRepository(BaseRepository):
-    table_name = "vocabularies"
+    table_name = "vocabulary_items"
     columns = [
         "id",
         "word",
         "part_of_speech",
-        "meaning",
-        "description",
+        "vi_meaning",
+        "eng_description",
         "example",
+        "note",
         "correct_count",
         "wrong_count",
         "created_at"
@@ -34,6 +35,25 @@ class VocabularyRepository(BaseRepository):
             ORDER BY day
         """
         return self.db.fetch_all(query, (from_date,))
+    
+    def get_all_vocabulary(self):
+        return self.all()
+    
+    def count_all(self) -> int:
+        query = f"SELECT COUNT(*) FROM {self.table_name}"
+        row = self.db.fetch_one(query)
+        return row[0] if row else 0
+    
+    def get_all_vocabulary_complete(self) -> list[Vocabulary]:
+        # TO DO: get all vocabulary entries with complete examples and vi_meaning (non-empty example field)
+        query = f"""
+            SELECT * FROM {self.table_name}
+            WHERE example IS NOT NULL AND example != '' AND vi_meaning IS NOT NULL AND vi_meaning != ''
+        """
+        return self.db.fetch_all(query)
+        
+        
+        
 
 
     
