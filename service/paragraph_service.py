@@ -31,6 +31,9 @@ class ParagraphService:
         return paragraph_id
 
     def update_paragraph(self, paragraph_id: int,
+                         title: str = None,
+                         input_paragraph: str = None,
+                         reference: str = None,
                          machine_translation: str = None,
                          completed: float = None,
                          score: float = None):
@@ -38,6 +41,12 @@ class ParagraphService:
         if not paragraph:
             raise ValueError(f"Paragraph with id {paragraph_id} does not exist.")
 
+        if title is not None:
+            paragraph.title = title
+        if input_paragraph is not None:
+            paragraph.input_paragraph = input_paragraph
+        if reference is not None:
+            paragraph.reference = reference
         if machine_translation is not None:
             paragraph.machine_translation = machine_translation
         if completed is not None:

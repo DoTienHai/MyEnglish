@@ -10,8 +10,9 @@ class HomeViewModel:
         self.sentence_service = sentence_service
         self.vocabulary_service = vocabulary_service
 
-    def get_paragraph_progress_summary(self):
-        return self.paragraph_service.get_paragraph_progress_summary()
+    def get_paragraph_progress_summary(self) -> dict:
+        data = self.paragraph_service.get_paragraph_progress_summary()
+        return data
 
     def count_vocabulary_by_date(self, number_of_days: int):
         date = (datetime.now() - timedelta(days=number_of_days)
@@ -34,6 +35,19 @@ class HomeViewModel:
     def get_incomplete_paragraphs(self):
         data = []
         for paragraph in self.paragraph_service.get_incomplete_paragraphs():
+            data.append({
+                "id": paragraph.id,
+                "title": paragraph.title,
+                "completed": paragraph.completed,
+                "score": paragraph.score,
+                "created_at": paragraph.created_at
+            })
+        return data
+
+    def get_all_paragraphs(self) -> list[dict]:
+        """Get all paragraphs (Open, In-Progress, Completed)"""
+        data = []
+        for paragraph in self.paragraph_service.get_all_paragraphs():
             data.append({
                 "id": paragraph.id,
                 "title": paragraph.title,
@@ -87,3 +101,15 @@ class HomeViewModel:
         wrong_count = payload.get("wrong_count")
         self.vocabulary_service.update_vocabulary(
             vocab_id, word, part_of_speech, vi_meaning, eng_description, example, note, correct_count, wrong_count)
+
+    def delete_paragraph(self, payload: dict):
+        print("Deleting paragraph with payload:", payload)
+        paragraph_id = payload.get("id")
+        self.paragraph_service.delete_paragraph(paragraph_id)
+
+    def update_paragraph(self, payload: dict):
+        """Update paragraph """
+        print("Updating paragraph with payload:", payload)
+        paragraph_id = payload.get("id")
+        new_title = payload.get("title", "")
+        self.paragraph_service.update_paragraph(paragraph_id=paragraph_id, title=new_title)

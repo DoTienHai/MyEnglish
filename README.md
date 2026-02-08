@@ -6,18 +6,12 @@
 <!-- i want to give user that you can click here to download app exe -->
 Download the latest Windows executable (if available): [Download MyEnglish (Windows)](https://drive.google.com/file/d/1MjKpDprdZpvsENBw1uSMLhCFwjrOGEEb/view?usp=drive_link)
 
-If you haven't packaged the application yet, build it with:
----
-```bash
-flet pack main.py
-```
-
-After building, place the generated `.exe` into `build/main/` or upload it to GitHub Releases and update the link above.
 ## ✨ Key Features
 
-- **Session Management** - Create and track English learning sessions with progress monitoring
+- **Paragraph Management** - Create and track English learning paragraphs with progress monitoring
 - **Sentence Translation Practice** - Practice translation with instant AI-powered similarity scoring
 - **Vocabulary Tracker** - Build vocabulary lists with daily tracking and statistics visualization
+- **Flashcard Practice** - Interactive flashcard mode with multiple-choice questions for vocabulary review
 - **Smart Scoring System** - Uses semantic similarity (sentence-transformers) to evaluate translation accuracy
 - **Translation Integration** - Quick reference with Google Translate API support
 - **Interactive Dashboard** - Visual charts and progress indicators for learning analytics
@@ -34,15 +28,13 @@ After building, place the generated `.exe` into `build/main/` or upload it to Gi
 | **Database** | SQLite3 | (built-in) |
 | **ML/AI Scoring** | sentence-transformers | 5.1.2 |
 | **Translation** | Google Translate API, googletrans | 4.0.0+ |
-| **Build Tool** | PyInstaller | 6.16.0 |
-| **Package Management** | pip | (standard) |
+
 
 **Core Dependencies:**
 - `flet` - Desktop UI framework
 - `sentence-transformers` - Semantic similarity scoring
-- `torch`, `transformers` - ML model backends
-- `google-cloud-translate` - Translation services
-- `pyinstaller` - Executable building
+- `google-cloud-translate` - Google Cloud Translation API
+- `googletrans` - Free translation support (fallback option)
 
 ---
 
@@ -112,7 +104,7 @@ MyEnglish/
 │
 ├── model/                           # Data models
 │   ├── sentence.py                  # Sentence model
-│   ├── session.py                   # Session model
+│   ├── paragraph.py                 # Paragraph model
 │   └── vocabulary.py                # Vocabulary model
 │
 ├── repositories/                    # Data access layer
@@ -120,14 +112,14 @@ MyEnglish/
 │   ├── db_init.py                   # Database initialization
 │   ├── repo_base.py                 # Base repository class
 │   ├── sentence_repo.py             # Sentence data access
-│   ├── session_repo.py              # Session data access
+│   ├── paragraph_repo.py            # Paragraph data access
 │   └── vocabulary_repo.py           # Vocabulary data access
 │
 ├── service/                         # Business logic layer
 │   ├── scoring_service.py           # AI-powered scoring (singleton)
 │   ├── translation_service.py       # Translation integration
 │   ├── sentence_service.py          # Sentence operations
-│   ├── session_service.py           # Session operations
+│   ├── paragraph_service.py         # Paragraph operations
 │   └── vocabulary_service.py        # Vocabulary operations
 │
 ├── view/                            # UI components (Flet)
@@ -287,7 +279,7 @@ This project is developed as a personal learning exercise and for demonstration 
 ## 🚦 Current Status
 
 - ✅ Core MVCS architecture
-- ✅ Session and vocabulary management
+- ✅ Paragraph and vocabulary management
 - ✅ AI-powered sentence scoring
 - ✅ Interactive dashboard with charts
 - ✅ Database persistence

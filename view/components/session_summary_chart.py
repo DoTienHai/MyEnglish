@@ -35,7 +35,7 @@ class SessionSummaryChart(ft.Column):
             )
         
         radius = (height-50)/4
-        space_radius = radius*2/3
+        space_radius = radius*1/2
         
         return [
             ft.Text("Paragraph summary", size=18, weight="bold", color=PRIMARY_DARK, text_align=ft.TextAlign.CENTER),
@@ -45,21 +45,21 @@ class SessionSummaryChart(ft.Column):
                         sections=[
                             ft.PieChartSection(
                                 value=self.completed,
-                                title=f"{self.completed}",
+                                title=f"Completed\n{self.completed}",
                                 color=PRIMARY,
                                 radius=radius,
                                 title_style=ft.TextStyle(size=12, color=OPAQUE_WHITE),
                             ),
                             ft.PieChartSection(
                                 value=self.in_progress,
-                                title=f"{self.in_progress}",
+                                title=f"In progress\n{self.in_progress}",
                                 color=HOT_IN_PROGRESS,
                                 radius=radius,
                                 title_style=ft.TextStyle(size=12, color=OPAQUE_WHITE),
                             ),
                             ft.PieChartSection(
                                 value=self.open_count,
-                                title=f"{self.open_count}",
+                                title=f"Open\n{self.open_count}",
                                 color=HOT_OPEN,
                                 radius=radius,
                                 title_style=ft.TextStyle(size=12, color=OPAQUE_WHITE),

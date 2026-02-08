@@ -17,7 +17,6 @@ class TranslatePracticeScreen(ft.Container):
         self.translate_practice_vm.step.subscribe(self.render)
         self.render(TRANSLATE_PRACTICE_STEP.STEP_1_INPUT_TEXT)
         
-
     def build_step_1(self):
         title_text_field = ft.TextField(
                     label="Enter title of paragraph",
@@ -68,7 +67,7 @@ class TranslatePracticeScreen(ft.Container):
         sentences = self.translate_practice_vm.input_sentences
         for sentence in sentences:
             sentence_input = ft.Text(f"{sentences.index(sentence) + 1}. {sentence}", size=16, weight="bold", expand=True, selectable=True)
-            text_field = ft.TextField(label="Enter translation", expand=True, multiline=True)
+            text_field = ft.TextField(value = "", label="Enter translation", expand=True, multiline=True)
             new_words_field = ft.TextField(label="New words (optional), split by comma", expand=True, multiline=True)
             list_view.controls.append(ft.Row(
                 controls=[
@@ -83,6 +82,7 @@ class TranslatePracticeScreen(ft.Container):
 
         button_bar = ft.Row(
             controls=[
+                ft.ElevatedButton("Back", on_click=self.on_back_step_2),
                 ft.ElevatedButton("Submit Translations", on_click=lambda e : self.translate_practice_vm.handle_step_2(
                     sentence_translations=[tf.value for tf in translation_text_fields],
                     new_words_list=[nwf.value for nwf in new_words_fields])),
@@ -98,16 +98,34 @@ class TranslatePracticeScreen(ft.Container):
             ],
             spacing=10,
         )
+        
+    def on_back_step_2(self, e):
+        alert = ft.AlertDialog(
+            title=ft.Text("Confirm"),
+            content=ft.Text("Are you sure you want to go back? Your current translations will be lost."),
+            actions=[
+                ft.TextButton("Cancel", on_click=lambda e: self.alert_service.close(alert)),
+                ft.TextButton("Yes, go back", on_click=lambda e: _confirm_back_step_2()),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+        )
+        self.alert_service.open(alert)
+        
+        def _confirm_back_step_2():
+            self.alert_service.close(alert)
+            self.translate_practice_vm.switch_step(TRANSLATE_PRACTICE_STEP.STEP_1_INPUT_TEXT)
 
     def build_step_3(self):
-        list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True) 
-        for index in range(len(self.translate_practice_vm.input_sentences)):
+        list_view = ft.ListView(controls=[], spacing=10, padding=10, auto_scroll=False, expand=True)
+        sentences = self.translate_practice_vm.get_sentences_detail()
+        
+        for sentence in sentences:
             list_view.controls.append(ft.Column(
                 controls=[
-                    ft.Text(f"Source sentence: {self.translate_practice_vm.input_sentences[index]}", size=16, weight="bold"),
-                    ft.Text(f"Your Translation: {self.translate_practice_vm.sentence_translations[index]}", size=16),
-                    ft.Text(f"Correct Translation: {self.translate_practice_vm.sentences_translated_by_translator[index]}", size=16, color=SUCCESS),
-                    ft.Text(f"Score: {self.translate_practice_vm.scores[index]}.", size=16, color=SUCCESS),
+                    ft.Text(f"Source sentence: {sentence.input_sentence}", size=16, weight="bold"),
+                    ft.Text(f"Your Translation: {sentence.user_translation}", size=16),
+                    ft.Text(f"Correct Translation: {sentence.machine_translation}", size=16, color=SUCCESS),
+                    ft.Text(f"Score: {sentence.score}.", size=16, color=SUCCESS),
                     ft.Divider(),
                 ],
                 spacing=5,
