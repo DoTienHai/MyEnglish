@@ -16,9 +16,7 @@
 5. [Layer Architecture (MVVM-S)](#layer-architecture-mvvm-s)
 6. [Component Design](#component-design)
 7. [Data Flow Diagrams](#data-flow-diagrams)
-8. [API & Interface Specifications](#api--interface-specifications)
-9. [Design Patterns & Principles](#design-patterns--principles)
-10. [Implementation Guidelines](#implementation-guidelines)
+8. [Summary & Next Steps](#summary--next-steps)
 
 ---
 
@@ -46,14 +44,14 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    UI LAYER (Flet)                       │
+│                    UI LAYER (Flet)                      │
 │  ┌──────────────────────────────────────────────────┐   │
-│  │  Screens & Views                                  │   │
-│  │  - home_view (Dashboard)                          │   │
-│  │  - translate_practice_view (Translation UI)       │   │
-│  │  - vocabulary_view (Flashcard UI)                 │   │
+│  │  Screens & Views                                 │   │
+│  │  - home_view (Dashboard)                         │   │
+│  │  - translate_practice_view (Translation UI)      │   │
+│  │  - vocabulary_view (Flashcard UI)                │   │
 │  └──────────────────────────────────────────────────┘   │
-│                           ↑↓                             │
+│                           ↑↓                            │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  Components (Reusable UI Widgets)                │   │
 │  │  - session_summary_chart (Pie chart)             │   │
@@ -65,7 +63,7 @@
 └─────────────────────────────────────────────────────────┘
                            ↑↓
 ┌─────────────────────────────────────────────────────────┐
-│               VIEW MODEL LAYER (State & Logic)           │
+│               VIEW MODEL LAYER (State & Logic)          │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  ViewModels (Format & Aggregate Data)            │   │
 │  │  - home_vm.py                                    │   │
@@ -76,7 +74,7 @@
 └─────────────────────────────────────────────────────────┘
                            ↑↓
 ┌─────────────────────────────────────────────────────────┐
-│               SERVICE LAYER (Business Logic)             │
+│               SERVICE LAYER (Business Logic)            │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  Services (Orchestrate Repositories)             │   │
 │  │  - paragraph_service                             │   │
@@ -88,7 +86,7 @@
 └─────────────────────────────────────────────────────────┘
                            ↑↓
 ┌─────────────────────────────────────────────────────────┐
-│              REPOSITORY LAYER (Data Access)              │
+│              REPOSITORY LAYER (Data Access)             │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  Repositories (CRUD Operations)                  │   │
 │  │  - repo_base.py (Abstract base class)            │   │
@@ -99,17 +97,17 @@
 └─────────────────────────────────────────────────────────┘
                            ↑↓
 ┌─────────────────────────────────────────────────────────┐
-│              MODEL LAYER (Data Classes)                  │
+│              MODEL LAYER (Data Classes)                 │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  Data Models (Entity Classes)                    │   │
 │  │  - paragraph.py (Paragraph entity)               │   │
 │  │  - sentence.py (Sentence entity)                 │   │
-│  │  - vocabulary.py (Vocabulary item)                │   │
+│  │  - vocabulary.py (Vocabulary item)               │   │
 │  └──────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────┘
                            ↑↓
 ┌─────────────────────────────────────────────────────────┐
-│                  DATABASE LAYER (SQLite)                 │
+│                  DATABASE LAYER (SQLite)                │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │  - paragraph, sentence, vocabulary tables        │   │
 │  │  - Auto-increment IDs, timestamps, FK constraints│   │
@@ -170,115 +168,11 @@ Relationships:
   Vocabulary is independent (no FK to Paragraph/Sentence)
 ```
 
-### Database Schema (SQL)
-
-```sql
--- Paragraph Table
-CREATE TABLE paragraph (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    source TEXT,
-    input_text TEXT NOT NULL,
-    completion_percent REAL DEFAULT 0.0,
-    average_score REAL DEFAULT 0.0,
-    status TEXT DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'IN_PROGRESS', 'COMPLETED')),
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Sentence Table
-CREATE TABLE sentence (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    paragraph_id INTEGER NOT NULL,
-    sentence_text TEXT NOT NULL,
-    english_text TEXT NOT NULL,
-    machine_translation TEXT,
-    user_translation TEXT,
-    ai_score REAL,
-    sequence_order INTEGER NOT NULL,
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (paragraph_id) REFERENCES paragraph(id) ON DELETE CASCADE
-);
-
--- Vocabulary Table
-CREATE TABLE vocabulary (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    word_en TEXT NOT NULL UNIQUE,
-    word_vn TEXT NOT NULL,
-    example TEXT,
-    correct_count INTEGER DEFAULT 0,
-    wrong_count INTEGER DEFAULT 0,
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    date_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Indexes for performance
-CREATE INDEX idx_sentence_paragraph_id ON sentence(paragraph_id);
-CREATE INDEX idx_paragraph_status ON paragraph(status);
-CREATE INDEX idx_vocabulary_word_en ON vocabulary(word_en);
-```
-
-### Data Model Classes
-
-#### Paragraph Model
-```python
-class Paragraph:
-    id: int
-    title: str
-    source: str
-    input_text: str
-    completion_percent: float  # 0-100%
-    average_score: float       # 0-10
-    status: str                # OPEN, IN_PROGRESS, COMPLETED
-    date_created: datetime
-    date_updated: datetime
-    
-    Methods:
-    - to_dict() → dict
-    - from_dict(data: dict) → Paragraph
-    - to_row() → tuple (for DB insertion)
-    - __repr__()
-```
-
-#### Sentence Model
-```python
-class Sentence:
-    id: int
-    paragraph_id: int
-    sentence_text: str
-    english_text: str
-    machine_translation: str
-    user_translation: str
-    ai_score: float            # 0-10
-    sequence_order: int        # 1, 2, 3...
-    date_created: datetime
-    
-    Methods:
-    - to_dict() → dict
-    - from_dict(data: dict) → Sentence
-    - to_row() → tuple
-    - __repr__()
-```
-
-#### Vocabulary Model
-```python
-class Vocabulary:
-    id: int
-    word_en: str
-    word_vn: str
-    example: str
-    correct_count: int
-    wrong_count: int
-    accuracy: float            # calculated: correct/(correct+wrong)
-    date_created: datetime
-    date_updated: datetime
-    
-    Methods:
-    - to_dict() → dict
-    - from_dict(data: dict) → Vocabulary
-    - to_row() → tuple
-    - __repr__()
-```
+**Database Notes:**
+- 3 tables: Paragraph, Sentence, Vocabulary
+- Paragraph ↔ Sentence: 1:N relationship (CASCADE delete)
+- Vocabulary: Independent table
+- Detailed schema will be implemented in Phase 4
 
 ---
 
@@ -292,12 +186,12 @@ class Vocabulary:
 │  (Dashboard)│
 └──────┬──────┘
        │
-   ┌───┴────┬──────────┐
-   ▼        ▼          ▼
-┌────────┐ ┌────────┐ ┌────────┐
-│Translate│ │Vocab  │ │ Other  │
-│Practice │ │Flash  │ │ Screens│
-└────────┘ └────────┘ └────────┘
+   ┌───┴──────┬──────────┐
+   ▼          ▼          ▼
+┌─────────┐ ┌────────┐ ┌────────┐
+│Translate│ │Vocab   │ │ Other  │
+│Practice │ │Flash   │ │ Screens│
+└─────────┘ └────────┘ └────────┘
    │          │
    ▼          ▼
  Details   Editor
@@ -755,420 +649,7 @@ ObserverBase notifies View on any ViewModel change
 
 ---
 
-## API & Interface Specifications
 
-### Service Interfaces
-
-#### IParagraphService
-```python
-class ParagraphService:
-    def create_with_sentences(title: str, source: str, text: str) → Paragraph
-    def get_all() → List[Paragraph]
-    def get_by_id(id: int) → Paragraph
-    def update(paragraph: Paragraph) → bool
-    def delete(id: int) → bool
-    def get_incomplete() → List[Paragraph]
-    def get_stats() → Dict[str, int]  # {completed, in_progress, open}
-```
-
-#### ISentenceService
-```python
-class SentenceService:
-    def get_by_paragraph(paragraph_id: int) → List[Sentence]
-    def update_translation(sentence_id: int, translation: str) → bool
-    def update_score(sentence_id: int, score: float) → bool
-```
-
-#### IVocabularyService
-```python
-class VocabularyService:
-    def create(word_en: str, word_vn: str, example: str) → Vocabulary
-    def get_all() → List[Vocabulary]
-    def get_random(count: int = 1) → List[Vocabulary]
-    def record_correct_answer(vocabulary_id: int) → bool
-    def record_wrong_answer(vocabulary_id: int) → bool
-    def search(keyword: str) → List[Vocabulary]
-    def get_daily_stats(days: int = 10) → Dict[date, int]
-```
-
-#### IScoringService
-```python
-class ScoringService:
-    def score(user_text: str, reference_text: str) → float  # 0-10
-    # Singleton: Score is computationally expensive (ML model)
-```
-
-#### ITranslationService
-```python
-class TranslationService:
-    def translate(text: str, src_lang: str = 'en', dst_lang: str = 'vi') → str
-    # Note: May fail gracefully (returns empty string or original text)
-```
-
-### Repository Interfaces
-
-#### IBaseRepository (Generic)
-```python
-class BaseRepository:
-    def create(model: Model) → int  # Returns inserted ID
-    def get(id: int) → Optional[Model]
-    def get_or_raise(id: int) → Model  # Raises exception if not found
-    def update(model: Model) → bool
-    def delete(id: int) → bool
-    def all() → List[Model]
-    def filter(**kwargs) → List[Model]  # e.g., filter(status='COMPLETED')
-    def count() → int
-```
-
-#### IParagraphRepository
-```python
-class ParagraphRepository(BaseRepository):
-    # Inherited: create, get, update, delete, all, filter, count
-    # Custom:
-    def get_incomplete() → List[Paragraph]
-    def get_by_status(status: str) → List[Paragraph]
-```
-
-#### ISentenceRepository
-```python
-class SentenceRepository(BaseRepository):
-    def get_by_paragraph(paragraph_id: int) → List[Sentence]
-    def delete_by_paragraph(paragraph_id: int) → int  # Returns count deleted
-```
-
-#### IVocabularyRepository
-```python
-class VocabularyRepository(BaseRepository):
-    def get_by_word(word_en: str) → Optional[Vocabulary]
-    def search(keyword: str) → List[Vocabulary]
-```
-
----
-
-## Design Patterns & Principles
-
-### 1. **Repository Pattern**
-**Purpose:** Encapsulate data access logic
-
-```python
-# Instead of:
-db = sqlite3.connect('app.db')
-db.execute("SELECT * FROM paragraph WHERE id = ?", (1,))
-
-# Use:
-para_repo = ParagraphRepository(db_connect)
-para = para_repo.get(1)  # Clean API
-```
-
-**Benefits:** Easy to mock for testing, swap implementations
-
----
-
-### 2. **Service Layer Pattern**
-**Purpose:** Orchestrate complex business logic
-
-```python
-# Instead of spreading logic across the UI:
-# Use a service to encapsulate logic:
-
-class ParagraphService:
-    def create_with_sentences(self, title, source, text):
-        # 1. Validate input
-        # 2. Create paragraph
-        # 3. Split sentences
-        # 4. Create sentence records
-        # 5. Return result
-```
-
-**Benefits:** Reusable, testable, single responsibility
-
----
-
-### 3. **Dependency Injection**
-**Purpose:** Decouple components, enable testing
-
-```python
-# BAD: Hard-coded dependencies
-class TranslatePracticeViewModel:
-    def __init__(self):
-        self.para_service = ParagraphService()  # Can't test easily
-
-# GOOD: Injected dependencies
-class TranslatePracticeViewModel:
-    def __init__(self, para_service: ParagraphService):
-        self.para_service = para_service  # Easy to mock
-```
-
-**Benefits:** Testable, flexible, prevents tight coupling
-
----
-
-### 4. **Observer Pattern**
-**Purpose:** Notify UI when ViewModel data changes
-
-```python
-# ViewModel extends ObserverBase
-class HomeViewModel(ObserverBase):
-    def load_data(self):
-        self.data = ...
-        self.notify_observers()  # Notify UI to refresh
-
-# View attaches itself as observer
-class HomeScreen(UserControl):
-    def __init__(self, vm):
-        self.vm = vm
-        self.vm.attach(self.on_vm_changed)
-    
-    def on_vm_changed(self):
-        self.update()  # Re-render
-```
-
-**Benefits:** Reactive UI, decoupled, real-time updates
-
----
-
-### 5. **Singleton Pattern (Thread-Safe)**
-**Purpose:** Ensure only one instance of expensive resources
-
-```python
-# DBConnect singleton (thread-safe)
-class DBConnect:
-    _instance = None
-    _lock = threading.Lock()
-    
-    def __new__(cls):
-        with cls._lock:
-            if cls._instance is None:
-                cls._instance = super().__new__(cls)
-        return cls._instance
-
-# ScoringService singleton (ML model is expensive)
-class ScoringService:
-    _instance = None
-    _lock = threading.Lock()
-    
-    def __new__(cls):
-        with cls._lock:
-            if cls._instance is None:
-                cls._instance = super().__new__(cls)
-        return cls._instance
-    
-    def _get_model(self):
-        # Load model only once
-        if self._model is None:
-            self._model = load_transformer_model()
-        return self._model
-```
-
-**Benefits:** Memory efficient, thread-safe, consistent state
-
----
-
-### 6. **Model-to-Row Consistency**
-**Purpose:** Ensure data integrity between model and database
-
-```python
-class Paragraph:
-    def __init__(self, ...):
-        self.id = id
-        self.title = title
-        self.source = source
-    
-    def to_row(self):
-        # MUST match column order in repository!
-        return (self.id, self.title, self.source, ...)
-
-class ParagraphRepository(BaseRepository):
-    columns = ['id', 'title', 'source', ...]  # MUST match to_row()!
-    
-    def create(self, para: Paragraph):
-        row = para.to_row()  # Ensure order matches
-        self.db.execute(f"INSERT INTO paragraph VALUES {row}")
-```
-
-**Benefits:** Prevents silent data corruption, easy debugging
-
----
-
-## Implementation Guidelines
-
-### Code Organization Best Practices
-
-#### 1. **Imports Organization**
-```python
-# Standard library first
-import sqlite3
-import threading
-from datetime import datetime
-
-# Third-party libraries
-from flet import *
-
-# Local imports
-from repository.paragraph_repo import ParagraphRepository
-from model.paragraph import Paragraph
-```
-
-#### 2. **File Structure**
-```
-project/
-├── model/              # Data classes (pure data)
-│   ├── paragraph.py
-│   ├── sentence.py
-│   └── vocabulary.py
-│
-├── repositories/       # Data access (CRUD)
-│   ├── repo_base.py
-│   ├── paragraph_repo.py
-│   ├── sentence_repo.py
-│   └── vocabulary_repo.py
-│
-├── service/           # Business logic
-│   ├── paragraph_service.py
-│   ├── sentence_service.py
-│   ├── vocabulary_service.py
-│   ├── translation_service.py
-│   └── scoring_service.py
-│
-├── view_model/        # UI logic (data formatting)
-│   ├── home_vm.py
-│   ├── translate_practice_vm.py
-│   └── vocabulary_vm.py
-│
-└── view/             # UI (Flet)
-    ├── screens/
-    │   ├── home_view.py
-    │   ├── translate_practice_view.py
-    │   └── vocabulary_view.py
-    └── components/
-        ├── paragraph_table.py
-        └── vocabulary_table.py
-```
-
-#### 3. **Error Handling Strategy**
-```python
-# Repository layer: Raise exceptions (propagate DB errors)
-def get(self, id: int) -> Optional[Model]:
-    try:
-        cursor = self.db.execute(f"SELECT * FROM {self.table_name} WHERE id = ?", (id,))
-        row = cursor.fetchone()
-        if row is None:
-            raise Exception(f"Record not found: {self.table_name}.id={id}")
-        return self.model_class.from_row(row)
-    except Exception as e:
-        logger.error(f"Database error: {e}")
-        raise
-
-# Service layer: Handle exceptions, provide user-friendly messages
-def create_with_sentences(self, title, source, text):
-    try:
-        # Business logic
-    except ValueError as e:
-        return {'success': False, 'error': f"Invalid input: {e}"}
-    except Exception as e:
-        return {'success': False, 'error': 'Server error. Try again.'}
-
-# ViewModel: Format error messages for UI
-def on_create_error(self, error: str):
-    self.error_message = error
-    self.notify_observers()
-```
-
-#### 4. **Testing Strategy**
-```python
-# Unit test: Test service with mocked repository
-@mock('repositories.paragraph_repo.ParagraphRepository')
-def test_create_with_sentences(mock_repo):
-    service = ParagraphService(mock_repo)
-    result = service.create_with_sentences('Title', 'Source', 'Sent1. Sent2.')
-    
-    assert result.title == 'Title'
-    mock_repo.create.assert_called()
-
-# Integration test: Test with in-memory SQLite
-def test_paragraph_flow():
-    db = sqlite3.connect(':memory:')  # In-memory DB
-    repo = ParagraphRepository(db)
-    
-    para = Paragraph(title='Test', ...)
-    id = repo.create(para)
-    result = repo.get(id)
-    
-    assert result.title == 'Test'
-```
-
-#### 5. **Performance Considerations**
-```python
-# Query optimization
-class VocabularyRepository:
-    def get_all(self):
-        # Bad: N+1 query problem
-        words = self.db.execute("SELECT * FROM vocabulary")
-        for word in words:
-            accuracy = self.db.execute(...)  # Repeated queries!
-        
-        # Good: Single query with calculated field
-        words = self.db.execute("""
-            SELECT id, word_en, correct_count, wrong_count,
-                   CAST(correct_count AS FLOAT) / 
-                   (correct_count + wrong_count) as accuracy
-            FROM vocabulary
-        """)
-
-# Lazy loading (Model loading)
-class ScoringService:
-    def __init__(self):
-        self._model = None  # Not loaded yet
-    
-    def _get_model(self):
-        # Load only when needed
-        if self._model is None:
-            print("Loading ML model... (first time only)")
-            self._model = SentenceTransformer('...')
-        return self._model
-    
-    def score(self, text1, text2):
-        model = self._get_model()  # Lazy load
-        return model.similarity(text1, text2)
-```
-
-#### 6. **Documentation Requirements**
-```python
-class ParagraphService:
-    """Service for managing translation practice paragraphs.
-    
-    Responsibilities:
-    - Create paragraphs with automatic sentence splitting
-    - Orchestrate paragraph and sentence repositories
-    - Calculate paragraph statistics
-    
-    Example:
-        service = ParagraphService(para_repo, sent_repo)
-        para = service.create_with_sentences(
-            title='BBC Article',
-            source='BBC News',
-            text='Climate change affects... The world needs...'
-        )
-        para.completion_percent  # 0.0 (no translations yet)
-    """
-    
-    def create_with_sentences(self, title: str, source: str, text: str) -> Paragraph:
-        """Create a paragraph with automatic sentence splitting.
-        
-        Args:
-            title: Paragraph title (max 200 chars)
-            source: Reference source (optional)
-            text: English paragraph (min 2 sentences)
-        
-        Returns:
-            Paragraph instance with sentences populated
-        
-        Raises:
-            ValueError: If text has < 2 sentences
-        """
-```
-
----
 
 ## Summary & Next Steps
 
@@ -1205,5 +686,3 @@ class ParagraphService:
 **END OF ARCHITECTURE & DESIGN DOCUMENTATION**
 
 *Date Created: February 9, 2026*  
-*SDLC Phase: Phase 3 - Design (Draft)*  
-*Next Phase: Phase 4 - Development (Implementation)*
