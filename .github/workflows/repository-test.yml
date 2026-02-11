@@ -19,6 +19,14 @@ jobs:
       with:
         python-version: '3.12.4'
     
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -43,3 +51,14 @@ jobs:
         name: coverage-report
         path: htmlcov/
         retention-days: 30
+    
+    - name: Commit artifacts to artifacts branch
+      if: always()
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+        git checkout -b artifacts || git checkout artifacts
+        cp -r htmlcov/* .
+        git add .
+        git commit -m "Coverage report - run ${{ github.run_number }}" || true
+        git push origin artifacts
