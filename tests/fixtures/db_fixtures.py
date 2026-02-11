@@ -20,12 +20,19 @@ def memory_db() -> Generator[DBConnect, None, None]:
     Returns:
         Generator[DBConnect, None, None]: Database connection object stored in RAM
     """
+    # Reset singleton before creating new instance
+    DBConnect._instance = None
+    
     # Create in-memory database (data stored in RAM, not disk)
     db = DBConnect(":memory:")
     
     # Initialize database schema (create tables, indexes, etc.)
     DBInit(db).create_tables()
-    return db
+    
+    yield db
+    
+    # Cleanup: Reset singleton after test
+    DBConnect._instance = None
 
 
 @pytest.fixture(scope="function")
