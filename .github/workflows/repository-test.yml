@@ -1,0 +1,53 @@
+name: Repository Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-repository:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12.4
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.4'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-html
+    
+    - name: Run Repository Unit Tests
+      run: |
+        pytest tests/unit_test/repository/test_paragraph_repo.py \
+          -v \
+          --tb=short \
+          --html=report.html \
+          --self-contained-html \
+          --cov=repositories \
+          --cov-report=html \
+          --cov-report=term
+    
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-report
+        path: report.html
+        retention-days: 30
+    
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: coverage-report
+        path: htmlcov/
+        retention-days: 30
