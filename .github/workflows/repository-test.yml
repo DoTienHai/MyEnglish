@@ -31,7 +31,7 @@ jobs:
         pip install pytest pytest-cov pytest-html
     
     - name: Run Repository Unit Tests
-      run: pytest tests/unit_test/repository/test_paragraph_repo.py -v --tb=short --html=report.html --self-contained-html --cov=repositories --cov-report=html --cov-report=term
+      run: pytest tests/unit_test/repository -v --tb=short --html=report.html --self-contained-html --cov=repositories --cov-report=html --cov-report=term
     
     - name: Upload test report
       uses: actions/upload-artifact@v4
