@@ -105,7 +105,7 @@ class DBInit:
         self.db.execute(vocab_table, commit=True)
         
         
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     db = DBConnect("test.db")
     db_init = DBInit(db)
     db_init.create_tables()

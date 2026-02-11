@@ -39,6 +39,6 @@ def loading_overlay_test(page: ft.Page):
     overlay.opacity = 1
     page.add(overlay)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     ft.app(target=loading_overlay_test)
     

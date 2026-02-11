@@ -59,7 +59,7 @@ class ScoringService:
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     scorer = ScoringService()
     sentence_a = "This is a test sentence."
     sentence_b = "Đây là 1 câu thử."

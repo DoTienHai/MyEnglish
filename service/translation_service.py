@@ -118,7 +118,7 @@ class TranslationService:
         else:
             return self._translate_googletrans(text, retries)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     translator = TranslationService("gg_cloud_key.json")
     ret = translator.translate_eng_to_vn(
         "A human cell swarms with trillions of molecules, including some 42 million proteins and a plethora of carbohydrates, lipids, and nucleic acids."

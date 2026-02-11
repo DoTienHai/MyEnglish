@@ -299,7 +299,7 @@ class VocabularyTable(ft.Container):
             self.update_callback()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import flet as ft
 
     def on_edit_click(vocabulary):

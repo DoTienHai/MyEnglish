@@ -81,7 +81,7 @@ class ParagraphService:
         self.paragraph_repo.delete(paragraph_id)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     paragraph_service = ParagraphService()
     summary = paragraph_service.get_paragraph_progress_summary()
     print(summary)

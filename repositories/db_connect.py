@@ -83,5 +83,5 @@ class DBConnect:
                 cursor.close()
 
                 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     db = DBConnect(r"test.db")

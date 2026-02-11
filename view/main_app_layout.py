@@ -118,5 +118,5 @@ def main_layout(page: ft.Page):
     page.add(app.build())
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     ft.app(target=main_layout)

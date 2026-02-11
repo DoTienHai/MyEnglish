@@ -97,7 +97,7 @@ class VocabularyService:
         self.vocab_repo.delete(vocab_id)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     vocab_service = VocabularyService()
     all_vocabs = vocab_service.get_all_vocabulary()
     print(all_vocabs)

@@ -38,7 +38,7 @@ class ParagraphRepository(BaseRepository):
         rows = self.db.fetch_all(query)
         return [self.to_entity(row) for row in rows]
     
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     db = DBConnect("test.db")
     paragraph_repo = ParagraphRepository(db)
     new_paragraph = Paragraph(

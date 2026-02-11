@@ -76,7 +76,7 @@ class SentenceService:
         return self.sentence_repo.get_avg_score()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sentence_service = SentenceService()
     count = sentence_service.count_sentences_by_paragraph_id(1)
     print(count)
