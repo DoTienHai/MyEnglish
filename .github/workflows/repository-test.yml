@@ -21,14 +21,7 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12.4'
-    
-    - name: Cache pip packages
-      uses: actions/cache@v3
-      with:
-        path: ~\AppData\Local\pip\Cache
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        cache: 'pip'
     
     - name: Install dependencies
       run: |
@@ -64,4 +57,4 @@ jobs:
         cp -r htmlcov/* .
         git add .
         git commit -m "Coverage report - run ${{ github.run_number }}" || true
-        git push origin artifacts
+        git push origin artifacts --force-with-lease
