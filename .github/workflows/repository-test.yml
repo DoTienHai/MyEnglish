@@ -37,7 +37,7 @@ jobs:
     
     - name: Debug - List test_report contents
       if: always()
-      run: dir test_report /s
+      run: dir test_report
 
     - name: Upload test reports
       uses: actions/upload-artifact@v4
