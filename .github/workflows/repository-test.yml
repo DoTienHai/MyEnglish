@@ -36,7 +36,7 @@ jobs:
       run: pytest tests/unit_test/repository -v --tb=short --html=test_report/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/htmlcov --cov-report=term
 
     - name: Remove coverage .gitignore
-      run: rm -f test_report/htmlcov/.gitignore
+      run: Remove-Item -LiteralPath test_report/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
 
     - name: Upload test reports
       uses: actions/upload-artifact@v4
