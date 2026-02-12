@@ -8,12 +8,10 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
   test-repository:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
@@ -53,7 +51,9 @@ jobs:
 
     - name: Deploy coverage report to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
-      if: github.ref == 'refs/heads/main'
+      if: always() && github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./test_report/htmlcov
+        force_orphan: true
+
