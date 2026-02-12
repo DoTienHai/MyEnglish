@@ -33,19 +33,11 @@ jobs:
     - name: Run Repository Unit Tests
       run: pytest tests/unit_test/repository -v --tb=short --html=test_report/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/htmlcov --cov-report=term
     
-    - name: Upload test report
+    - name: Upload test reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-report
-        path: test_report/report.html
-        retention-days: 30
-    
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: coverage-report
-        path: test_report/htmlcov/
+        name: test-reports
+        path: test_report/
         retention-days: 30
 
