@@ -19,7 +19,22 @@ Download the latest Windows executable (if available): [Download MyEnglish (Wind
 
 ---
 
-## 🔑 Tech Stack
+## � Table of Contents
+
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [How to Run & Use](#-how-to-run--use)
+- [Testing & Test Reports](#-testing--test-reports)
+- [Project Structure](#-project-structure--explanation)
+- [Environment Variables](#-environment-variables)
+- [Contribution Guidelines](#-contribution-guidelines)
+- [License](#-license)
+- [Additional Resources](#-additional-resources)
+- [Current Status](#-current-status)
+
+---
+
+## �🔑 Tech Stack
 
 | Component | Technology | Version |
 |-----------|-----------|---------|
