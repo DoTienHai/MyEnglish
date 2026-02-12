@@ -41,3 +41,11 @@ jobs:
         path: test_report/
         retention-days: 30
 
+    - name: Commit test reports to main
+      if: github.ref == 'refs/heads/main' && always()
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add test_report/
+        git diff --quiet && git diff --staged --quiet || (git commit -m "chore: Update test reports [skip ci]" && git push origin main)
+
