@@ -1,13 +1,11 @@
-"""Model fixtures - Sample data for testing"""
+"""Paragraph fixtures - Sample data for testing"""
 import pytest
 from model.paragraph import Paragraph
-from model.sentence import Sentence
-from model.vocabulary import Vocabulary
 
 
 @pytest.fixture
 def sample_paragraph() -> Paragraph:
-    """Sample paragraph for testing"""
+    """Sample paragraph for testing - 50% completed"""
     return Paragraph(
         id=None,
         title="Test Translation Session",
@@ -22,7 +20,7 @@ def sample_paragraph() -> Paragraph:
 
 @pytest.fixture
 def sample_paragraph_completed() -> Paragraph:
-    """Completed paragraph for testing"""
+    """Completed paragraph fixture - 100% completed"""
     return Paragraph(
         id=None,
         title="Completed Session",
@@ -37,7 +35,7 @@ def sample_paragraph_completed() -> Paragraph:
 
 @pytest.fixture
 def sample_paragraph_incomplete() -> Paragraph:
-    """In-progress paragraph for testing"""
+    """In-progress paragraph fixture - 75% completed"""
     return Paragraph(
         id=None,
         title="In Progress Session",
@@ -52,7 +50,7 @@ def sample_paragraph_incomplete() -> Paragraph:
 
 @pytest.fixture
 def sample_paragraph_open() -> Paragraph:
-    """Open (not started) paragraph for testing"""
+    """Open (not started) paragraph fixture - 0% completed"""
     return Paragraph(
         id=None,
         title="Not Started Session",
@@ -62,70 +60,4 @@ def sample_paragraph_open() -> Paragraph:
         completed=0.0,
         score=0.0,
         created_at="2026-01-23 09:00:00"
-    )
-
-
-@pytest.fixture
-def sample_sentence() -> Sentence:
-    """Sample sentence for testing"""
-    return Sentence(
-        id=None,
-        paragraph_id=1,
-        sentence_index=1,
-        input_sentence="The quick brown fox jumps over the lazy dog.",
-        user_translation="Con cáo nâu nhanh nhảy qua con chó lười biếng.",
-        machine_translation="Con cáo nâu nhanh nhảy qua con chó lười biếng.",
-        score=0.95,
-        note="Good translation",
-        created_at="2026-01-26 12:00:00"
-    )
-
-
-@pytest.fixture
-def sample_sentence_2() -> Sentence:
-    """Sample sentence 2 for testing multiple sentences"""
-    return Sentence(
-        id=None,
-        paragraph_id=1,
-        sentence_index=2,
-        input_sentence="This is a common English sentence used for testing.",
-        user_translation="Đây là một câu tiếng Anh phổ biến được sử dụng để kiểm tra.",
-        machine_translation="Đây là một câu tiếng Anh phổ biến được sử dụng để kiểm tra.",
-        score=0.88,
-        note="Acceptable translation",
-        created_at="2026-01-26 12:05:00"
-    )
-
-
-@pytest.fixture
-def sample_vocabulary() -> Vocabulary:
-    """Sample vocabulary for testing"""
-    return Vocabulary(
-        id=None,
-        word="serendipity",
-        part_of_speech="noun",
-        vi_meaning="Tình cờ may mắn, sự gặp gỡ vui vẻ khó lường",
-        eng_description="The occurrence of events by chance in a happy or beneficial way",
-        example="Meeting her was pure serendipity.",
-        note="Common word in English literature",
-        correct_count=3,
-        wrong_count=1,
-        created_at="2026-01-26 12:00:00"
-    )
-
-
-@pytest.fixture
-def sample_vocabulary_2() -> Vocabulary:
-    """Sample vocabulary 2 for testing multiple vocabulary items"""
-    return Vocabulary(
-        id=None,
-        word="ephemeral",
-        part_of_speech="adjective",
-        vi_meaning="Tạm thời, chỉ tồn tại trong thời gian ngắn",
-        eng_description="Lasting for a very short time; transitory",
-        example="The beauty of cherry blossoms is ephemeral.",
-        note="Often used in poetry and literature",
-        correct_count=2,
-        wrong_count=0,
-        created_at="2026-01-26 13:00:00"
     )

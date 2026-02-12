@@ -1,7 +1,10 @@
 """Unit tests for SentenceRepository"""
+from typing import List
 import pytest
 from repositories.sentence_repo import SentenceRepository
+from repositories.paragraph_repo import ParagraphRepository
 from model.sentence import Sentence
+from model.paragraph import Paragraph
 
 
 class TestSentenceRepositoryCreate:
@@ -9,9 +12,9 @@ class TestSentenceRepositoryCreate:
 
     def test_create_sentence_success(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test creating a sentence successfully"""
@@ -27,9 +30,9 @@ class TestSentenceRepositoryCreate:
 
     def test_created_sentence_can_be_retrieved(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test that created sentence can be retrieved"""
@@ -48,9 +51,9 @@ class TestSentenceRepositoryCreate:
 
     def test_create_multiple_sentences(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -69,9 +72,9 @@ class TestSentenceRepositoryCreate:
 
     def test_created_sentence_has_correct_fields(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test that created sentence has all correct fields"""
@@ -96,9 +99,9 @@ class TestSentenceRepositoryRead:
 
     def test_get_existing_sentence(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test getting an existing sentence"""
@@ -134,9 +137,9 @@ class TestSentenceRepositoryRead:
 
     def test_get_all_sentences_with_data(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -156,9 +159,9 @@ class TestSentenceRepositoryRead:
 
     def test_get_by_paragraph_id_and_sentence_index(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test getting sentence by paragraph_id and sentence_index"""
@@ -195,9 +198,9 @@ class TestSentenceRepositoryUpdate:
 
     def test_update_sentence_translation(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test updating sentence translation"""
@@ -216,9 +219,9 @@ class TestSentenceRepositoryUpdate:
 
     def test_update_sentence_score(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test updating sentence score"""
@@ -237,9 +240,9 @@ class TestSentenceRepositoryUpdate:
 
     def test_update_sentence_note(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test updating sentence note"""
@@ -258,9 +261,9 @@ class TestSentenceRepositoryUpdate:
 
     def test_update_preserves_other_fields(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test that updating one field preserves other fields"""
@@ -285,9 +288,9 @@ class TestSentenceRepositoryDelete:
 
     def test_delete_existing_sentence(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test deleting an existing sentence"""
@@ -312,9 +315,9 @@ class TestSentenceRepositoryDelete:
 
     def test_delete_reduces_count(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -342,9 +345,9 @@ class TestSentenceRepositoryFilter:
 
     def test_filter_by_paragraph_id(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -364,9 +367,9 @@ class TestSentenceRepositoryFilter:
 
     def test_filter_by_sentence_index(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -386,9 +389,9 @@ class TestSentenceRepositoryFilter:
 
     def test_filter_returns_empty_list_when_no_match(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test that filter returns empty list when no match"""
@@ -418,9 +421,9 @@ class TestSentenceRepositoryCount:
 
     def test_count_all_with_data(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -439,9 +442,9 @@ class TestSentenceRepositoryCount:
 
     def test_count_by_paragraph_id(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
@@ -473,9 +476,9 @@ class TestSentenceRepositoryAvgScore:
 
     def test_get_avg_score_single_sentence(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence
     ) -> None:
         """Test getting average score with single sentence"""
@@ -491,9 +494,9 @@ class TestSentenceRepositoryAvgScore:
 
     def test_get_avg_score_multiple_sentences(
         self,
-        paragraph_repo,
+        paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph,
+        sample_paragraph: Paragraph,
         sample_sentence: Sentence,
         sample_sentence_2: Sentence
     ) -> None:
