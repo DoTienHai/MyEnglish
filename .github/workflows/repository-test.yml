@@ -35,6 +35,10 @@ jobs:
     - name: Run Repository Unit Tests
       run: pytest tests/unit_test/repository -v --tb=short --html=test_report/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/htmlcov --cov-report=term
     
+    - name: Debug - List test_report contents
+      if: always()
+      run: dir test_report /s
+
     - name: Upload test reports
       uses: actions/upload-artifact@v4
       if: always()
