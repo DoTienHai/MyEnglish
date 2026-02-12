@@ -48,3 +48,10 @@ jobs:
         name: coverage-report
         path: test_report/htmlcov/
         retention-days: 30
+
+    - name: Deploy coverage report to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main' && always()
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./test_report/htmlcov
