@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   test-repository:
@@ -31,14 +33,14 @@ jobs:
         pip install pytest pytest-cov pytest-html
     
     - name: Run Repository Unit Tests
-      run: pytest tests/unit_test/repository -v --tb=short --html=test_report/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/htmlcov --cov-report=term
+      run: pytest tests/unit_test/repository -v --tb=short --html=report.html --self-contained-html --cov=repositories --cov-report=html:htmlcov --cov-report=term
     
     - name: Upload test report
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-report
-        path: test_report/report.html
+        path: report.html
         retention-days: 30
     
     - name: Upload coverage report
@@ -46,7 +48,7 @@ jobs:
       if: always()
       with:
         name: coverage-report
-        path: test_report/htmlcov/
+        path: htmlcov/
         retention-days: 30
 
     - name: Deploy coverage report to GitHub Pages
@@ -54,6 +56,6 @@ jobs:
       if: always() && github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./test_report/htmlcov
+        publish_dir: ./htmlcov
         force_orphan: true
 
