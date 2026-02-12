@@ -91,6 +91,26 @@ The app will:
 ```bash
 flet pack main.py
 ```
+
+---
+
+## 🧪 Testing & Test Reports
+
+### View Test Results
+Automated test reports are generated and published to GitHub Pages after each commit:
+
+- **[Test Report](https://dotienhai.github.io/MyEnglish/report.html?sort=result)** - Unit test execution results with detailed pass/fail information
+- **[Code Coverage Report](https://dotienhai.github.io/MyEnglish/htmlcov/index.html)** - Coverage analysis showing which code paths are tested
+
+### Running Tests Locally
+```bash
+# Run all unit tests for repositories
+pytest tests/unit_test/repository -v
+
+# Run with coverage report
+pytest tests/unit_test/repository -v --cov=repositories --cov-report=html:test_report/htmlcov
+```
+
 ---
 
 ## 📁 Project Structure & Explanation
