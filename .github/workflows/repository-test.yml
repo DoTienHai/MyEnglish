@@ -23,14 +23,19 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.12.4'
-        cache: 'pip'
-        cache-dependency-path: requirements.txt
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov pytest-html
     
     - name: Run Repository Unit Tests
       run: pytest tests/unit_test/repository -v --tb=short --html=test_report/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/htmlcov --cov-report=term
