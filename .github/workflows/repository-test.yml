@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   test-repository:
@@ -48,4 +50,12 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git add test_report/
         git diff --quiet && git diff --staged --quiet || (git commit -m "chore: Update test reports [skip ci]" && git push origin main)
+
+    - name: Deploy test reports to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./test_report
+        force_orphan: true
 
