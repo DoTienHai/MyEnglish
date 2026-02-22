@@ -6,21 +6,12 @@
 <!-- i want to give user that you can click here to download app exe -->
 Download the latest Windows executable (if available): [Download MyEnglish (Windows)](https://drive.google.com/file/d/1MjKpDprdZpvsENBw1uSMLhCFwjrOGEEb/view?usp=drive_link)
 
-## ✨ Key Features
-
-- **Paragraph Management** - Create and track English learning paragraphs with progress monitoring
-- **Sentence Translation Practice** - Practice translation with instant AI-powered similarity scoring
-- **Vocabulary Tracker** - Build vocabulary lists with daily tracking and statistics visualization
-- **Flashcard Practice** - Interactive flashcard mode with multiple-choice questions for vocabulary review
-- **Smart Scoring System** - Uses semantic similarity (sentence-transformers) to evaluate translation accuracy
-- **Translation Integration** - Quick reference with Google Translate API support
-- **Interactive Dashboard** - Visual charts and progress indicators for learning analytics
-- **Persistent Storage** - Local SQLite database for offline learning without data loss
-
 ---
 
-## � Table of Contents
+## 📑 Table of Contents
 
+- [Learning Methodology](#-learning-methodology)
+- [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
 - [Installation](#-installation)
 - [How to Run & Use](#-how-to-run--use)
@@ -34,7 +25,46 @@ Download the latest Windows executable (if available): [Download MyEnglish (Wind
 
 ---
 
-## �🔑 Tech Stack
+## 📖 Learning Methodology
+
+This application is built on a proven learning method that combines **reading and translation practice**. This approach has been effective since secondary school level, helping learners achieve:
+
+- ✅ **High exam scores** in English language proficiency tests
+- ✅ **Award recognition** in English competition exams for students
+- ✅ **Deep comprehension** of English grammar and vocabulary through practical application
+- ✅ **Natural fluency** by translating real-world sentences and paragraphs
+
+### The Evolution of This Method
+
+**Back then (Secondary School):** Learning relied on translating English paragraphs, but there was no effective way to check accuracy—only basic tools like Google Translate were available, which couldn't evaluate semantic correctness or provide quality feedback.
+
+**Today (With AI):** Modern AI-powered semantic similarity scoring makes this proven method dramatically more effective:
+- **Instant intelligent feedback** - AI evaluates if your translation captures the meaning, not just word-by-word accuracy
+- **Easy verification** - No need for a teacher or tutor; the AI checks your work in real-time
+- **Better learning outcomes** - Immediate feedback accelerates comprehension and retention
+
+### How the Method Works
+
+The application implements this proven learning methodology:
+1. **Reading full paragraphs** in English to understand context and flow
+2. **Translating sentence-by-sentence** to apply grammar knowledge
+3. **Comparing translations** with AI-powered scoring to get intelligent, instant feedback
+4. **Building vocabulary** through contextual examples and repeated exposure
+
+## ✨ Key Features
+
+- **Paragraph Management** - Create and track English learning paragraphs with progress monitoring
+- **Sentence Translation Practice** - Practice translation with instant AI-powered similarity scoring
+- **Vocabulary Tracker** - Build vocabulary lists with daily tracking and statistics visualization
+- **Flashcard Practice** - Interactive flashcard mode with multiple-choice questions for vocabulary review
+- **Smart Scoring System** - Uses semantic similarity (sentence-transformers) to evaluate translation accuracy
+- **Translation Integration** - Quick reference with Google Translate API support
+- **Interactive Dashboard** - Visual charts and progress indicators for learning analytics
+- **Persistent Storage** - Local SQLite database for offline learning without data loss
+
+---
+
+## 🔑 Tech Stack
 
 | Component | Technology | Version |
 |-----------|-----------|---------|
@@ -43,6 +73,7 @@ Download the latest Windows executable (if available): [Download MyEnglish (Wind
 | **Database** | SQLite3 | (built-in) |
 | **ML/AI Scoring** | sentence-transformers | 5.1.2 |
 | **Translation** | Google Translate API, googletrans | 4.0.0+ |
+| **CI/CD & Automation** | GitHub Actions | (built-in) |
 
 
 **Core Dependencies:**
@@ -114,8 +145,7 @@ flet pack main.py
 ### View Test Results
 Automated test reports are generated and published to GitHub Pages after each commit:
 
-- **[Test Report](https://dotienhai.github.io/MyEnglish/report.html?sort=result)** - Unit test execution results with detailed pass/fail information
-- **[Code Coverage Report](https://dotienhai.github.io/MyEnglish/htmlcov/index.html)** - Coverage analysis showing which code paths are tested
+- **[Test Report Dashboard](https://dotienhai.github.io/MyEnglish/index.html)** - Interactive dashboard displaying all test results with coverage statistics
 
 ### Running Tests Locally
 ```bash
