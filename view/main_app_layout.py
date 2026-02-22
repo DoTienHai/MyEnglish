@@ -16,6 +16,7 @@ from view.screens.translate_practice_view import *
 from view.screens.vocabulary_view import *
 from view.screens.home_view import *
 import flet as ft
+from config import GOOGLE_CREDENTIALS_PATH
 
 
 class MainAppLayout:
@@ -27,7 +28,7 @@ class MainAppLayout:
         self.paragraph_service = ParagraphService()
         self.sentence_service = SentenceService()
         self.vocabulary_service = VocabularyService()
-        self.translator = TranslationService()
+        self.translator = TranslationService(key_path=GOOGLE_CREDENTIALS_PATH)
         self.score_service = ScoringService()
 
         self.home_vm = HomeViewModel(paragraph_service=self.paragraph_service,
