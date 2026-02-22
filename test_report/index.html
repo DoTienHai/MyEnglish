@@ -26,7 +26,7 @@
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            max-width: 600px;
+            max-width: 1000px;
             width: 100%;
         }
         
@@ -40,68 +40,146 @@
         .subtitle {
             text-align: center;
             color: #666;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-size: 16px;
         }
         
-        .reports {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+        .test-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
         
-        .report-card {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 150px;
+        .test-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
-        .report-card:hover {
-            border-color: #667eea;
-            background: #f8f9ff;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
-        }
-        
-        .report-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-        
-        .report-title {
-            color: #333;
+        .test-table th {
+            color: white;
+            padding: 16px;
+            text-align: left;
             font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+        
+        .test-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+        }
+        
+        .test-table tbody tr:hover {
+            background-color: #f8f9ff;
+        }
+        
+        .test-table td {
+            padding: 14px 16px;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .test-type {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .test-object {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .test-object-icon {
             font-size: 18px;
-            text-align: center;
-            margin-bottom: 6px;
         }
         
-        .report-desc {
-            color: #999;
+        .report-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
             font-size: 13px;
-            text-align: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
-        @media (max-width: 600px) {
-            .reports {
-                grid-template-columns: 1fr;
-            }
-            
+        .report-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .report-link-icon {
+            font-size: 14px;
+        }
+        
+        .stats-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .stats-badge.passed {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+        
+        .stats-badge.coverage {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        @media (max-width: 900px) {
             .container {
                 padding: 20px;
             }
             
+            .test-table th,
+            .test-table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+            
             h1 {
                 font-size: 24px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                max-width: 100%;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .test-table {
+                font-size: 11px;
+            }
+            
+            .test-table th,
+            .test-table td {
+                padding: 8px 6px;
+            }
+            
+            .report-link {
+                padding: 4px 8px;
+                font-size: 11px;
             }
         }
     </style>
@@ -109,21 +187,223 @@
 <body>
     <div class="container">
         <h1>📊 Test Reports</h1>
-        <p class="subtitle">MyEnglish Repository Test & Coverage Results</p>
+        <p class="subtitle">MyEnglish Test Results & Coverage Overview</p>
         
-        <div class="reports">
-            <a href="./report.html" class="report-card">
-                <div class="report-icon">📝</div>
-                <div class="report-title">Test Report</div>
-                <div class="report-desc">Pytest Results</div>
-            </a>
-            
-            <a href="./htmlcov/index.html" class="report-card">
-                <div class="report-icon">📈</div>
-                <div class="report-title">Coverage Report</div>
-                <div class="report-desc">Code Coverage Details</div>
-            </a>
-        </div>
+        <table class="test-table">
+            <thead>
+                <tr>
+                    <th>Loại Test</th>
+                    <th>Object Test</th>
+                    <th>Test Report</th>
+                    <th>Coverage Report</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Test rows will be generated here -->
+            </tbody>
+        </table>
     </div>
+    
+    <script>
+        // Check if file exists by trying to fetch it
+        async function fileExists(path) {
+            try {
+                const response = await fetch(path, { method: 'HEAD' });
+                return response.ok;
+            } catch {
+                return false;
+            }
+        }
+        
+        // Load configuration and generate table rows dynamically
+        async function initializeReports() {
+            try {
+                const configResponse = await fetch('./tests-config.json');
+                const config = await configResponse.json();
+                
+                const tableBody = document.getElementById('tableBody');
+                tableBody.innerHTML = '';
+                
+                for (const reportType of config.testReportTypes) {
+                    for (const group of reportType.groups) {
+                        const row = await createTableRow(reportType, group);
+                        tableBody.innerHTML += row;
+                    }
+                }
+                
+                // Load all stats after rendering
+                loadAllTestSummaries(config.testReportTypes);
+                
+            } catch (error) {
+                console.log('Error initializing reports:', error);
+            }
+        }
+        
+        async function createTableRow(reportType, group) {
+            const folderId = `${reportType.basePath}_${group.folder}`.replace(/\s+/g, '_');
+            
+            return `
+                <tr data-folder-id="${folderId}">
+                    <td class="test-type">${reportType.icon} ${reportType.name}</td>
+                    <td class="test-object">
+                        <span class="test-object-icon">${group.icon}</span>
+                        <span>${group.name}</span>
+                    </td>
+                    <td>
+                        <a href="./${reportType.basePath}/${group.folder}/report.html" class="report-link" target="_blank">
+                            <span class="report-link-icon">📝</span>
+                            <span>View Report</span>
+                            <span class="stats-badge passed" id="${folderId}_test_stats">-</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="./${reportType.basePath}/${group.folder}/htmlcov/index.html" class="report-link" target="_blank">
+                            <span class="report-link-icon">📈</span>
+                            <span>Coverage</span>
+                            <span class="stats-badge coverage" id="${folderId}_coverage_stats">-</span>
+                        </a>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        async function loadAllTestSummaries(reportTypes) {
+            for (const reportType of reportTypes) {
+                for (const group of reportType.groups) {
+                    await loadTestSummary(group, reportType.basePath);
+                }
+            }
+        }
+        
+        async function loadTestSummary(group, basePath) {
+            try {
+                const reportPath = `./${basePath}/${group.folder}/report.html`;
+                const coveragePath = `./${basePath}/${group.folder}/htmlcov/index.html`;
+                const folderId = `${basePath}_${group.folder}`.replace(/\s+/g, '_');
+                const rowElement = document.querySelector(`tr[data-folder-id="${folderId}"]`);
+                
+                // Step 1: Check if folder exists by trying to fetch htmlcov/index.html
+                const folderExists = await fileExists(coveragePath);
+                
+                if (!folderExists) {
+                    // Folder không tồn tại (404) → Ẩn row
+                    if (rowElement) {
+                        rowElement.style.display = 'none';
+                    }
+                    return;
+                }
+                
+                // Folder tồn tại → Giữ row, tiếp tục check reports
+                
+                // Step 2: Check if report.html exists
+                const reportExists = await fileExists(reportPath);
+                const testStatsEl = document.getElementById(`${folderId}_test_stats`);
+                
+                if (!reportExists) {
+                    // report.html chưa có → Not Tested
+                    if (testStatsEl) {
+                        testStatsEl.textContent = '⏳ Not Tested';
+                    }
+                } else {
+                    // report.html có → Parse và hiển thị % thực tế
+                    try {
+                        const reportResponse = await fetch(reportPath);
+                        const reportHtml = await reportResponse.text();
+                        const stats = parseTestReport(reportHtml);
+                        const passedPercent = stats.total > 0 ? Math.round((stats.passed / stats.total) * 100) : 0;
+                        
+                        if (testStatsEl) {
+                            testStatsEl.textContent = `${passedPercent}%`;
+                        }
+                    } catch (e) {
+                        if (testStatsEl) {
+                            testStatsEl.textContent = '⏳ Not Tested';
+                        }
+                    }
+                }
+                
+                // Step 3: Check if htmlcov/index.html exists
+                const coverageStatsEl = document.getElementById(`${folderId}_coverage_stats`);
+                
+                if (!folderExists) {
+                    // htmlcov chưa có → Not Tested
+                    if (coverageStatsEl) {
+                        coverageStatsEl.textContent = '⏳ Not Tested';
+                    }
+                } else {
+                    // htmlcov có → Parse và hiển thị % thực tế
+                    try {
+                        const coverage = await loadCoverage(coveragePath);
+                        if (coverageStatsEl) {
+                            coverageStatsEl.textContent = `${coverage}%`;
+                        }
+                    } catch (e) {
+                        if (coverageStatsEl) {
+                            coverageStatsEl.textContent = '⏳ Not Tested';
+                        }
+                    }
+                }
+                
+            } catch (error) {
+                console.log(`Could not load test summary for ${group.name}:`, error);
+            }
+        }
+        
+        function updateTestStats(folderId, stats, coverage) {
+            const passedPercent = stats.total > 0 ? Math.round((stats.passed / stats.total) * 100) : 0;
+            
+            const testStatsEl = document.getElementById(`${folderId}_test_stats`);
+            if (testStatsEl) {
+                testStatsEl.textContent = `${passedPercent}%`;
+            }
+            
+            const coverageStatsEl = document.getElementById(`${folderId}_coverage_stats`);
+            if (coverageStatsEl) {
+                coverageStatsEl.textContent = `${coverage}%`;
+            }
+        }
+        
+        function parseTestReport(html) {
+            const stats = { total: 0, passed: 0, failed: 0 };
+            
+            // Match pattern from pytest-html: <span class="passed">81 Passed,</span>
+            const passMatch = html.match(/<span\s+class=["']?passed["']?[^>]*>(\d+)\s+Passed/i);
+            if (passMatch) {
+                stats.passed = parseInt(passMatch[1]) || 0;
+            }
+            
+            // Match pattern from pytest-html: <span class="failed">0 Failed,</span>
+            const failMatch = html.match(/<span\s+class=["']?failed["']?[^>]*>(\d+)\s+Failed/i);
+            if (failMatch) {
+                stats.failed = parseInt(failMatch[1]) || 0;
+            }
+            
+            stats.total = stats.passed + stats.failed;
+            
+            return stats;
+        }
+        
+        async function loadCoverage(htmlPath) {
+            try {
+                const response = await fetch(htmlPath);
+                const html = await response.text();
+                
+                // Parse coverage percentage from HTML
+                // Coverage.py uses: <span class="pc_cov">93%</span>
+                const percentMatch = html.match(/<span\s+class=["']?pc_cov["']?[^>]*>(\d+(?:\.\d+)?)\s*%<\/span>/i);
+                
+                if (percentMatch) {
+                    return Math.round(parseFloat(percentMatch[1]));
+                }
+                
+                return 0;
+            } catch (error) {
+                console.log('Could not load coverage from ' + htmlPath, error);
+                return 0;
+            }
+        }
+        
+        // Initialize reports when page loads
+        initializeReports();
+    </script>
 </body>
-</html>

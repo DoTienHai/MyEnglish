@@ -215,6 +215,5 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Test reports
-test_report/report.html
-test_report/htmlcov/
+# Test reports (ignore all generated test reports except config and folder markers)
+test_report/unit_test_report/*

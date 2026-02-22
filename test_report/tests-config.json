@@ -1,0 +1,60 @@
+{
+  "testReportTypes": [
+    {
+      "name": "Unit Tests",
+      "icon": "🧪",
+      "basePath": "unit_test_report",
+      "groups": [
+        {
+          "name": "Repository Tests",
+          "icon": "🗃️",
+          "folder": "repository"
+        },
+        {
+          "name": "Service Tests",
+          "icon": "⚙️",
+          "folder": "service"
+        },
+        {
+          "name": "Model Tests",
+          "icon": "📦",
+          "folder": "model"
+        },
+        {
+          "name": "ViewModel Tests",
+          "icon": "🧩",
+          "folder": "viewmodel"
+        }
+      ]
+    },
+    {
+      "name": "Integration Tests",
+      "icon": "🔗",
+      "basePath": "integration_test_report",
+      "groups": [
+        {
+          "name": "API Integration",
+          "icon": "🔌",
+          "folder": "api"
+        },
+        {
+          "name": "Database Integration",
+          "icon": "🗄️",
+          "folder": "database"
+        }
+      ]
+    },
+    {
+      "name": "Performance Tests",
+      "icon": "⚡",
+      "basePath": "performance_test_report",
+      "groups": [
+        {
+          "name": "Load Testing",
+          "icon": "📊",
+          "folder": "load"
+        }
+      ]
+    }
+  ]
+}
