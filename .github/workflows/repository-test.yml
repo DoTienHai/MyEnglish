@@ -67,3 +67,4 @@ jobs:
         publish_dir: ./test_report
         publish_branch: test_report
         force_orphan: false
+        keep_files: true
