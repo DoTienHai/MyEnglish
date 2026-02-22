@@ -47,6 +47,19 @@ jobs:
     - name: Remove coverage .gitignore
       run: Remove-Item -LiteralPath test_report/unit_test_report/repository/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
 
+    - name: Checkout test_report branch to preserve reports
+      run: |
+        git fetch origin test_report --quiet || true
+        git checkout test_report --quiet 2>/dev/null || echo "test_report branch does not exist yet"
+
+    - name: Copy new reports to test_report
+      run: |
+        if (-Not (Test-Path 'test_report')) { mkdir 'test_report' }
+        Copy-Item -Path 'test_report/unit_test_report/repository' -Destination 'test_report/unit_test_report/repository' -Recurse -Force
+
+    - name: Checkout main branch
+      run: git checkout main --quiet
+
     - name: Upload test reports
       uses: actions/upload-artifact@v4
       if: always()
@@ -62,4 +75,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./test_report
         publish_branch: test_report
-        force_orphan: true
+        force_orphan: false
