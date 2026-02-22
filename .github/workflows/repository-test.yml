@@ -7,12 +7,14 @@ on:
       - 'repositories/**'
       - 'tests/unit_test/repository/**'
       - 'model/**'
+      - '.github/workflows/repository-test.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'repositories/**'
       - 'tests/unit_test/repository/**'
       - 'model/**'
+      - '.github/workflows/repository-test.yml'
 
 permissions:
   contents: write
