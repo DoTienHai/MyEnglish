@@ -1,17 +1,17 @@
-name: Repository Unit Tests
+name: Service Unit Tests
 
 on:
   push:
     branches: [ main ]
     paths:
-      - 'repositories/**'
-      - 'tests/unit_test/repository/**'
+      - 'service/**'
+      - 'tests/unit_test/service/**'
       - 'model/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'repositories/**'
-      - 'tests/unit_test/repository/**'
+      - 'service/**'
+      - 'tests/unit_test/service/**'
       - 'model/**'
 
 permissions:
@@ -20,7 +20,7 @@ permissions:
   id-token: write
 
 jobs:
-  test-repository:
+  test-service:
     runs-on: windows-latest
     
     steps:
@@ -39,18 +39,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Run Repository Unit Tests
-      run: pytest tests/unit_test/repository -v --tb=short --html=test_report/unit_test_report/repository/report.html --self-contained-html --cov=repositories --cov-report=html:test_report/unit_test_report/repository/htmlcov --cov-report=term
+    - name: Run Service Unit Tests
+      run: pytest tests/unit_test/service -v --tb=short --html=test_report/unit_test_report/service/report.html --self-contained-html --cov=service --cov-report=html:test_report/unit_test_report/service/htmlcov --cov-report=term
 
     - name: Remove coverage .gitignore
-      run: Remove-Item -LiteralPath test_report/unit_test_report/repository/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
+      run: Remove-Item -LiteralPath test_report/unit_test_report/service/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
 
     - name: Upload test reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-reports
-        path: test_report/unit_test_report/repository/
+        path: test_report/unit_test_report/service/
         retention-days: 30
 
     - name: Deploy test reports to GitHub Pages
@@ -58,6 +58,6 @@ jobs:
       if: github.ref == 'refs/heads/main'
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./test_report/unit_test_report/repository
+        publish_dir: ./test_report/unit_test_report/service
         publish_branch: test_report
         force_orphan: true
