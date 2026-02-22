@@ -97,19 +97,19 @@ class TranslationService:
                 print(f"Error attempt {attempt+1}: {e}")
                 time.sleep(1)
         
-        return "[Translation failed]"
+        return "[Google cloud: Translation failed]"
 
     def _translate_googletrans(self, text, retries=3):
         """Googletrans free translation (retry 3 times)"""
         for attempt in range(retries):
             try:
-                result = type(self)._googletrans.translate(text, dest_language='vi')
+                result = type(self)._googletrans.translate(text, dest='vi')
                 return result.text
             except Exception as e:
                 print(f"Error attempt {attempt+1}: {e}")
                 time.sleep(1)
         
-        return "[Translation failed]"
+        return "[Googletrans: Translation failed]"
 
     def translate_eng_to_vn(self, text, retries=3):
         """Translate EN→VI: choose Google Cloud or googletrans"""
