@@ -21,6 +21,10 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: false
+
 jobs:
   test-service:
     runs-on: windows-latest
