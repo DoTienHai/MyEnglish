@@ -141,7 +141,15 @@
             color: #1e40af;
             border: 1px solid #93c5fd;
         }
-        
+
+        .current-datetime {
+            text-align: center;
+            color: #999;
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-weight: 600;
+        }
         @media (max-width: 900px) {
             .container {
                 padding: 20px;
@@ -188,6 +196,7 @@
     <div class="container">
         <h1>📊 Test Reports</h1>
         <p class="subtitle">MyEnglish Test Results & Coverage Overview</p>
+        <p class="current-datetime" id="lastGeneratedTimeDisplay"></p>
         
         <table class="test-table">
             <thead>
@@ -215,6 +224,34 @@
             }
         }
         
+        // Extract timestamp from test report HTML
+        function extractReportTimestamp(html) {
+            // Pattern: "Report generated on 22-Feb-2026 at 14:06:15"
+            const reportMatch = html.match(/Report generated on (\d{2}-\w{3}-\d{4}) at (\d{2}:\d{2}:\d{2})/);
+            if (reportMatch) {
+                return {
+                    date: reportMatch[1],  // "22-Feb-2026"
+                    time: reportMatch[2],  // "14:06:15"
+                    fullString: `${reportMatch[1]} ${reportMatch[2]}`
+                };
+            }
+            return null;
+        }
+        
+        // Extract timestamp from coverage HTML
+        function extractCoverageTimestamp(html) {
+            // Pattern: "created at 2026-02-22 14:06 +0700"
+            const coverageMatch = html.match(/created at (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/);
+            if (coverageMatch) {
+                return {
+                    date: coverageMatch[1],  // "2026-02-22"
+                    time: coverageMatch[2],  // "14:06"
+                    fullString: `${coverageMatch[1]} ${coverageMatch[2]}`
+                };
+            }
+            return null;
+        }
+        
         // Load configuration and generate table rows dynamically
         async function initializeReports() {
             try {
@@ -234,9 +271,97 @@
                 // Load all stats after rendering
                 loadAllTestSummaries(config.testReportTypes);
                 
+                // Load latest timestamp from test reports
+                loadLatestTimestamp(config.testReportTypes);
+                
             } catch (error) {
                 console.log('Error initializing reports:', error);
             }
+        }
+        
+        // Find and display the latest timestamp from all test reports
+        async function loadLatestTimestamp(reportTypes) {
+            let latestDate = null;
+            let latestDateObj = new Date(0);
+            
+            for (const reportType of reportTypes) {
+                for (const group of reportType.groups) {
+                    const reportPath = `./${reportType.basePath}/${group.folder}/report.html`;
+                    const coveragePath = `./${reportType.basePath}/${group.folder}/htmlcov/index.html`;
+                    
+                    // Try to get timestamp from report.html
+                    try {
+                        const reportResponse = await fetch(reportPath);
+                        if (reportResponse.ok) {
+                            const reportHtml = await reportResponse.text();
+                            const timestamp = extractReportTimestamp(reportHtml);
+                            if (timestamp) {
+                                latestDate = timestamp;
+                                // Parse date for comparison
+                                const dateStr = convertToStandardDate(timestamp.fullString);
+                                const dateObj = new Date(dateStr);
+                                if (dateObj > latestDateObj) {
+                                    latestDateObj = dateObj;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Ignore errors, continue to next
+                    }
+                    
+                    // Try to get timestamp from coverage HTML
+                    try {
+                        const coverageResponse = await fetch(coveragePath);
+                        if (coverageResponse.ok) {
+                            const coverageHtml = await coverageResponse.text();
+                            const timestamp = extractCoverageTimestamp(coverageHtml);
+                            if (timestamp) {
+                                latestDate = timestamp;
+                                // Parse date for comparison
+                                const dateStr = timestamp.fullString;
+                                const dateObj = new Date(dateStr);
+                                if (dateObj > latestDateObj) {
+                                    latestDateObj = dateObj;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        // Ignore errors, continue to next
+                    }
+                }
+            }
+            
+            // Display the latest timestamp
+            const timestampEl = document.getElementById('lastGeneratedTimeDisplay');
+            if (timestampEl) {
+                if (latestDate) {
+                    // Format: "22-Feb-2026 14:06:15" or "2026-02-22 14:06"
+                    timestampEl.textContent = 'Last test run: ⏱️ ' + latestDate.fullString;
+                } else {
+                    timestampEl.textContent = '';
+                }
+            }
+        }
+        
+        // Convert various date formats to standard format for comparison
+        function convertToStandardDate(dateString) {
+            // Handle "22-Feb-2026 14:06:15" format
+            const match1 = dateString.match(/(\d{2})-(\w{3})-(\d{4}) (\d{2}:\d{2}:\d{2})/);
+            if (match1) {
+                const monthMap = {
+                    'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                    'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                };
+                return `${match1[3]}-${monthMap[match1[2]]}-${match1[1]}T${match1[4]}`;
+            }
+            
+            // Handle "2026-02-22 14:06" format
+            const match2 = dateString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}:\d{2})/);
+            if (match2) {
+                return `${match2[1]}-${match2[2]}-${match2[3]}T${match2[4]}:00`;
+            }
+            
+            return dateString;
         }
         
         async function createTableRow(reportType, group) {
