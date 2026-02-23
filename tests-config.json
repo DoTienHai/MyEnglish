@@ -26,35 +26,6 @@
           "folder": "viewmodel"
         }
       ]
-    },
-    {
-      "name": "Integration Tests",
-      "icon": "🔗",
-      "basePath": "integration_test_report",
-      "groups": [
-        {
-          "name": "API Integration",
-          "icon": "🔌",
-          "folder": "api"
-        },
-        {
-          "name": "Database Integration",
-          "icon": "🗄️",
-          "folder": "database"
-        }
-      ]
-    },
-    {
-      "name": "Performance Tests",
-      "icon": "⚡",
-      "basePath": "performance_test_report",
-      "groups": [
-        {
-          "name": "Load Testing",
-          "icon": "📊",
-          "folder": "load"
-        }
-      ]
     }
   ]
 }
