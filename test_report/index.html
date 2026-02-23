@@ -196,15 +196,15 @@
     <div class="container">
         <h1>📊 Test Reports</h1>
         <p class="subtitle">MyEnglish Test Results & Coverage Overview</p>
-        <p class="current-datetime" id="lastGeneratedTimeDisplay"></p>
         
         <table class="test-table">
             <thead>
                 <tr>
-                    <th>Loại Test</th>
-                    <th>Object Test</th>
+                    <th>Test Type</th>
+                    <th>Test Object</th>
                     <th>Test Report</th>
                     <th>Coverage Report</th>
+                    <th>Test Date</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -271,75 +271,8 @@
                 // Load all stats after rendering
                 loadAllTestSummaries(config.testReportTypes);
                 
-                // Load latest timestamp from test reports
-                loadLatestTimestamp(config.testReportTypes);
-                
             } catch (error) {
                 console.log('Error initializing reports:', error);
-            }
-        }
-        
-        // Find and display the latest timestamp from all test reports
-        async function loadLatestTimestamp(reportTypes) {
-            let latestDate = null;
-            let latestDateObj = new Date(0);
-            
-            for (const reportType of reportTypes) {
-                for (const group of reportType.groups) {
-                    const reportPath = `./${reportType.basePath}/${group.folder}/report.html`;
-                    const coveragePath = `./${reportType.basePath}/${group.folder}/htmlcov/index.html`;
-                    
-                    // Try to get timestamp from report.html
-                    try {
-                        const reportResponse = await fetch(reportPath);
-                        if (reportResponse.ok) {
-                            const reportHtml = await reportResponse.text();
-                            const timestamp = extractReportTimestamp(reportHtml);
-                            if (timestamp) {
-                                latestDate = timestamp;
-                                // Parse date for comparison
-                                const dateStr = convertToStandardDate(timestamp.fullString);
-                                const dateObj = new Date(dateStr);
-                                if (dateObj > latestDateObj) {
-                                    latestDateObj = dateObj;
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        // Ignore errors, continue to next
-                    }
-                    
-                    // Try to get timestamp from coverage HTML
-                    try {
-                        const coverageResponse = await fetch(coveragePath);
-                        if (coverageResponse.ok) {
-                            const coverageHtml = await coverageResponse.text();
-                            const timestamp = extractCoverageTimestamp(coverageHtml);
-                            if (timestamp) {
-                                latestDate = timestamp;
-                                // Parse date for comparison
-                                const dateStr = timestamp.fullString;
-                                const dateObj = new Date(dateStr);
-                                if (dateObj > latestDateObj) {
-                                    latestDateObj = dateObj;
-                                }
-                            }
-                        }
-                    } catch (e) {
-                        // Ignore errors, continue to next
-                    }
-                }
-            }
-            
-            // Display the latest timestamp
-            const timestampEl = document.getElementById('lastGeneratedTimeDisplay');
-            if (timestampEl) {
-                if (latestDate) {
-                    // Format: "22-Feb-2026 14:06:15" or "2026-02-22 14:06"
-                    timestampEl.textContent = 'Last test run: ⏱️ ' + latestDate.fullString;
-                } else {
-                    timestampEl.textContent = '';
-                }
             }
         }
         
@@ -388,6 +321,7 @@
                             <span class="stats-badge coverage" id="${folderId}_coverage_stats">-</span>
                         </a>
                     </td>
+                    <td id="${folderId}_date">-</td>
                 </tr>
             `;
         }
@@ -406,6 +340,7 @@
                 const coveragePath = `./${basePath}/${group.folder}/htmlcov/index.html`;
                 const folderId = `${basePath}_${group.folder}`.replace(/\s+/g, '_');
                 const rowElement = document.querySelector(`tr[data-folder-id="${folderId}"]`);
+            const dateCell = document.getElementById(`${folderId}_date`);
                 
                 // Step 1: Check if folder exists by trying to fetch htmlcov/index.html
                 const folderExists = await fileExists(coveragePath);
@@ -435,10 +370,15 @@
                         const reportResponse = await fetch(reportPath);
                         const reportHtml = await reportResponse.text();
                         const stats = parseTestReport(reportHtml);
+                        const reportTimestamp = extractReportTimestamp(reportHtml);
                         const passedPercent = stats.total > 0 ? Math.round((stats.passed / stats.total) * 100) : 0;
                         
                         if (testStatsEl) {
                             testStatsEl.textContent = `${passedPercent}%`;
+                        }
+                        if (dateCell && reportTimestamp) {
+                            dateCell.textContent = reportTimestamp.fullString;
+                            dateCell.dataset.timestamp = convertToStandardDate(reportTimestamp.fullString);
                         }
                     } catch (e) {
                         if (testStatsEl) {
@@ -459,6 +399,18 @@
                     // htmlcov có → Parse và hiển thị % thực tế
                     try {
                         const coverage = await loadCoverage(coveragePath);
+                        const coverageResponse = await fetch(coveragePath);
+                        const coverageHtml = await coverageResponse.text();
+                        const coverageTimestamp = extractCoverageTimestamp(coverageHtml);
+                        if (dateCell && coverageTimestamp) {
+                            const coverageDate = coverageTimestamp.fullString;
+                            const coverageDateStandard = convertToStandardDate(coverageTimestamp.fullString);
+                            const existingDate = dateCell.dataset.timestamp;
+                            if (!existingDate || new Date(coverageDateStandard) > new Date(existingDate)) {
+                                dateCell.textContent = coverageDate;
+                                dateCell.dataset.timestamp = coverageDateStandard;
+                            }
+                        }
                         if (coverageStatsEl) {
                             coverageStatsEl.textContent = `${coverage}%`;
                         }
