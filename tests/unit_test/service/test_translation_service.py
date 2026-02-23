@@ -3,7 +3,7 @@ import pytest
 import os
 import json
 from unittest.mock import patch, MagicMock, mock_open
-from service.translation_service import TranslationService
+from service.translation_service import TranslationService, TranslationErrorMessage
 
 
 class TestTranslationServiceSingleton:
@@ -300,7 +300,7 @@ class TestTranslateEnglishToVietnamese:
         with patch('time.sleep'):
             result = translator.translate_eng_to_vn("Test")
         
-        assert result == "[Translation failed]"
+        assert result == TranslationErrorMessage.GOOGLETRANS_FAILED.value
 
     def test_translate_returns_string(self) -> None:
         """Test that translate always returns a string"""
@@ -325,6 +325,35 @@ class TestTranslateEnglishToVietnamese:
         result = translator.translate_eng_to_vn("Test", retries=5)
         
         assert isinstance(result, str)
+
+    @patch('service.translation_service.service_account.Credentials.from_service_account_file')
+    @patch('service.translation_service.os.path.exists', return_value=True)
+    def test_translate_google_cloud_max_retries_exceeded(self, mock_exists, mock_creds) -> None:
+        """Test Google Cloud translation when all retries are exhausted"""
+        mock_credentials = MagicMock()
+        mock_creds.return_value = mock_credentials
+        
+        key_content = {"project_id": "test-project"}
+        m = mock_open(read_data=json.dumps(key_content))
+        
+        with patch('builtins.open', m):
+            with patch('service.translation_service.translate.TranslationServiceClient') as mock_client:
+                mock_instance = MagicMock()
+                mock_instance.translate_text = MagicMock(side_effect=Exception("API Error"))
+                mock_client.return_value = mock_instance
+                
+                TranslationService._instance = None
+                TranslationService._lock = None
+                TranslationService._key_path = None
+                
+                translator = TranslationService("valid_key.json")
+                TranslationService._translate_cloud = mock_instance
+                TranslationService._use_google_cloud = True
+                
+                with patch('time.sleep'):
+                    result = translator.translate_eng_to_vn("Test")
+        
+        assert result == TranslationErrorMessage.GOOGLE_CLOUD_FAILED.value
 
 
 class TestIntegration:

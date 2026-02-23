@@ -2,9 +2,16 @@ import os
 import json
 import time
 import threading as _threading
+from enum import Enum
 from googletrans import Translator
 from google.oauth2 import service_account
 from google.cloud import translate_v3 as translate
+
+
+class TranslationErrorMessage(str, Enum):
+    """Translation error status messages"""
+    GOOGLE_CLOUD_FAILED = "[Google cloud: Translation failed]"
+    GOOGLETRANS_FAILED = "[Googletrans: Translation failed]"
 
 class TranslationService:
     """Singleton: 1 instance, 2 backends (Google Cloud or googletrans)"""
@@ -97,7 +104,7 @@ class TranslationService:
                 print(f"Error attempt {attempt+1}: {e}")
                 time.sleep(1)
         
-        return "[Google cloud: Translation failed]"
+        return TranslationErrorMessage.GOOGLE_CLOUD_FAILED.value
 
     def _translate_googletrans(self, text, retries=3):
         """Googletrans free translation (retry 3 times)"""
@@ -109,7 +116,7 @@ class TranslationService:
                 print(f"Error attempt {attempt+1}: {e}")
                 time.sleep(1)
         
-        return "[Googletrans: Translation failed]"
+        return TranslationErrorMessage.GOOGLETRANS_FAILED.value
 
     def translate_eng_to_vn(self, text, retries=3):
         """Translate EN→VI: choose Google Cloud or googletrans"""
