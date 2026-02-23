@@ -4,7 +4,7 @@
 
 **MyEnglish** is a modern desktop application for English learning, built with Python and [Flet](https://flet.dev/). It provides an interactive platform to practice English through sentence translation, vocabulary tracking, and AI-powered scoring. The project serves as both a practical learning tool and a demonstration of modern desktop app development with clean architecture patterns.
 <!-- i want to give user that you can click here to download app exe -->
-Download the latest Windows executable (if available): [Download MyEnglish (Windows)](https://drive.google.com/file/d/1MjKpDprdZpvsENBw1uSMLhCFwjrOGEEb/view?usp=drive_link)
+Download the latest Windows executable (if available): [Download MyEnglish (Windows)](https://drive.google.com/drive/folders/12X32qjfQtAbpnDQvfajp71Mq5Um7A_-o?usp=sharing)
 
 ---
 
