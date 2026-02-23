@@ -10,16 +10,99 @@ class Vocabulary:
                  correct_count: int, 
                  wrong_count: int, 
                  created_at: str):
+        # Validate critical fields
+        if not isinstance(word, str):
+            raise TypeError(
+                f"Word must be a string, got {type(word).__name__}"
+            )
+        
+        if not word or not word.strip():
+            raise ValueError(
+                "Word cannot be empty"
+            )
+        
         self.id = id
-        self.word = word
+        self.word = word.strip()
         self.part_of_speech = part_of_speech
         self.vi_meaning = vi_meaning
         self.eng_description = eng_description
         self.example = example
         self.note = note
+        
+        # Initialize private attributes for validation
+        self._correct_count = None
+        self._wrong_count = None
+        
+        # Use property setters to trigger validation
         self.correct_count = correct_count
         self.wrong_count = wrong_count
         self.created_at = created_at
+    
+    @property
+    def correct_count(self) -> int:
+        """Number of correct answers (>= 0)
+        
+        Returns:
+            int: Correct count
+        """
+        return self._correct_count
+    
+    @correct_count.setter
+    def correct_count(self, value: int) -> None:
+        """Validate and set correct count
+        
+        Args:
+            value: Correct count (must be >= 0)
+            
+        Raises:
+            TypeError: If value is not an integer
+            ValueError: If value is negative
+        """
+        if not isinstance(value, int):
+            raise TypeError(
+                f"Correct count must be an integer, got {type(value).__name__}"
+            )
+        
+        if value < 0:
+            raise ValueError(
+                f"Correct count cannot be negative: {value}. "
+                f"Must be >= 0."
+            )
+        
+        self._correct_count = value
+    
+    @property
+    def wrong_count(self) -> int:
+        """Number of wrong answers (>= 0)
+        
+        Returns:
+            int: Wrong count
+        """
+        return self._wrong_count
+    
+    @wrong_count.setter
+    def wrong_count(self, value: int) -> None:
+        """Validate and set wrong count
+        
+        Args:
+            value: Wrong count (must be >= 0)
+            
+        Raises:
+            TypeError: If value is not an integer
+            ValueError: If value is negative
+        """
+        if not isinstance(value, int):
+            raise TypeError(
+                f"Wrong count must be an integer, got {type(value).__name__}"
+            )
+        
+        if value < 0:
+            raise ValueError(
+                f"Wrong count cannot be negative: {value}. "
+                f"Must be >= 0."
+            )
+        
+        self._wrong_count = value
         
     def to_dict(self):
         return {
@@ -63,6 +146,3 @@ class Vocabulary:
             self.wrong_count,
             self.created_at
         ]
-        
-    def __repr__(self):
-        return f"Vocabulary(id={self.id}, word='{self.word}', part_of_speech='{self.part_of_speech}', vi_meaning='{self.vi_meaning}', correct_count={self.correct_count}, wrong_count={self.wrong_count}, created_at='{self.created_at}')"

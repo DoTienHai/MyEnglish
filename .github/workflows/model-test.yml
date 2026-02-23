@@ -1,0 +1,70 @@
+name: Model Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'model/**'
+      - 'tests/unit_test/model/**'
+      - 'tests/fixtures/**'
+      - '.github/workflows/model-test.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'model/**'
+      - 'tests/unit_test/model/**'
+      - 'tests/fixtures/**'
+      - '.github/workflows/model-test.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: false
+
+jobs:
+  test-model:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12.4
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.4'
+        cache: 'pip'
+        cache-dependency-path: requirements.txt
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run Model Unit Tests
+      run: pytest tests/unit_test/model -v --tb=short --html=test_report/unit_test_report/model/report.html --self-contained-html --cov=model --cov-report=html:test_report/unit_test_report/model/htmlcov --cov-report=term
+
+    - name: Remove coverage .gitignore
+      run: Remove-Item -LiteralPath test_report/unit_test_report/model/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
+
+    - name: Upload test reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-reports-model
+        path: test_report/unit_test_report/model/
+        retention-days: 30
+
+    - name: Deploy test reports to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./test_report
+        publish_branch: test_report
+        force_orphan: false
+        keep_files: true
