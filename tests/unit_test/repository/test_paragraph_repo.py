@@ -11,10 +11,10 @@ class TestParagraphRepositoryCreate:
     def test_create_paragraph_success(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test creating a paragraph successfully"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         
         assert paragraph_id is not None
         assert isinstance(paragraph_id, int)
@@ -23,27 +23,27 @@ class TestParagraphRepositoryCreate:
     def test_created_paragraph_can_be_retrieved(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test that created paragraph can be retrieved"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         retrieved = paragraph_repo.get(paragraph_id)
         
         assert retrieved is not None
-        assert retrieved.title == sample_paragraph.title
-        assert retrieved.input_paragraph == sample_paragraph.input_paragraph
-        assert retrieved.reference == sample_paragraph.reference
-        assert retrieved.machine_translation == sample_paragraph.machine_translation
+        assert retrieved.title == sample_paragraph_base_model.title
+        assert retrieved.input_paragraph == sample_paragraph_base_model.input_paragraph
+        assert retrieved.reference == sample_paragraph_base_model.reference
+        assert retrieved.machine_translation == sample_paragraph_base_model.machine_translation
 
     def test_create_multiple_paragraphs(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph,
-        sample_paragraph_completed: Paragraph
+        sample_paragraph_base_model: Paragraph,
+        sample_paragraph_completed_model: Paragraph
     ) -> None:
         """Test creating multiple paragraphs"""
-        paragraph_id_1 = paragraph_repo.create(sample_paragraph)
-        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed)
+        paragraph_id_1 = paragraph_repo.create(sample_paragraph_base_model)
+        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed_model)
         
         assert paragraph_id_1 is not None
         assert paragraph_id_2 is not None
@@ -52,17 +52,17 @@ class TestParagraphRepositoryCreate:
     def test_created_paragraph_has_correct_fields(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test that created paragraph has all correct fields"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         retrieved = paragraph_repo.get(paragraph_id)
         
-        assert retrieved.title == sample_paragraph.title
-        assert retrieved.completed == sample_paragraph.completed
-        assert retrieved.score == sample_paragraph.score
-        assert retrieved.reference == sample_paragraph.reference
-        assert retrieved.machine_translation == sample_paragraph.machine_translation
+        assert retrieved.title == sample_paragraph_base_model.title
+        assert retrieved.completed == sample_paragraph_base_model.completed
+        assert retrieved.score == sample_paragraph_base_model.score
+        assert retrieved.reference == sample_paragraph_base_model.reference
+        assert retrieved.machine_translation == sample_paragraph_base_model.machine_translation
 
 
 class TestParagraphRepositoryRead:
@@ -71,10 +71,10 @@ class TestParagraphRepositoryRead:
     def test_get_existing_paragraph(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test getting an existing paragraph"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         retrieved = paragraph_repo.get(paragraph_id)
         
         assert retrieved is not None
@@ -93,15 +93,15 @@ class TestParagraphRepositoryRead:
     def test_get_paragraph_preserves_data(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test that getting paragraph preserves all data accurately"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         retrieved = paragraph_repo.get(paragraph_id)
         
-        assert retrieved.to_dict()["title"] == sample_paragraph.to_dict()["title"]
-        assert retrieved.to_dict()["completed"] == sample_paragraph.to_dict()["completed"]
-        assert retrieved.to_dict()["score"] == sample_paragraph.to_dict()["score"]
+        assert retrieved.to_dict()["title"] == sample_paragraph_base_model.to_dict()["title"]
+        assert retrieved.to_dict()["completed"] == sample_paragraph_base_model.to_dict()["completed"]
+        assert retrieved.to_dict()["score"] == sample_paragraph_base_model.to_dict()["score"]
 
     def test_get_all_paragraphs_empty_database(
         self,
@@ -116,14 +116,14 @@ class TestParagraphRepositoryRead:
     def test_get_all_paragraphs_with_data(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph,
-        sample_paragraph_completed: Paragraph,
-        sample_paragraph_incomplete: Paragraph
+        sample_paragraph_base_model: Paragraph,
+        sample_paragraph_completed_model: Paragraph,
+        sample_paragraph_incomplete_model: Paragraph
     ) -> None:
         """Test getting all paragraphs"""
-        paragraph_repo.create(sample_paragraph)
-        paragraph_repo.create(sample_paragraph_completed)
-        paragraph_repo.create(sample_paragraph_incomplete)
+        paragraph_repo.create(sample_paragraph_base_model)
+        paragraph_repo.create(sample_paragraph_completed_model)
+        paragraph_repo.create(sample_paragraph_incomplete_model)
         
         all_paragraphs = paragraph_repo.all()
         
@@ -137,10 +137,10 @@ class TestParagraphRepositoryUpdate:
     def test_update_paragraph_title(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test updating paragraph title"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         para = paragraph_repo.get(paragraph_id)
         
         para.title = "Updated Title"
@@ -152,10 +152,10 @@ class TestParagraphRepositoryUpdate:
     def test_update_paragraph_completed_progress(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test updating paragraph completion progress"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         para = paragraph_repo.get(paragraph_id)
         
         para.completed = 75.0
@@ -169,10 +169,10 @@ class TestParagraphRepositoryUpdate:
     def test_update_complete_paragraph(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test updating paragraph to complete"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         para = paragraph_repo.get(paragraph_id)
         
         para.completed = 100.0
@@ -185,10 +185,10 @@ class TestParagraphRepositoryUpdate:
     def test_update_maintains_id(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test that update maintains the paragraph ID"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         para = paragraph_repo.get(paragraph_id)
         original_id = para.id
         
@@ -227,10 +227,10 @@ class TestParagraphRepositoryDelete:
     def test_delete_paragraph_success(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test deleting a paragraph"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         assert paragraph_repo.get(paragraph_id) is not None
         
         paragraph_repo.delete(paragraph_id)
@@ -248,12 +248,12 @@ class TestParagraphRepositoryDelete:
     def test_delete_removes_from_all(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph,
-        sample_paragraph_completed: Paragraph
+        sample_paragraph_base_model: Paragraph,
+        sample_paragraph_completed_model: Paragraph
     ) -> None:
         """Test that deleted paragraph is removed from all()"""
-        paragraph_id_1 = paragraph_repo.create(sample_paragraph)
-        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed)
+        paragraph_id_1 = paragraph_repo.create(sample_paragraph_base_model)
+        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed_model)
         
         assert len(paragraph_repo.all()) == 2
         
@@ -279,10 +279,10 @@ class TestParagraphRepositoryCustomQueries:
     def test_get_incomplete_paragraphs_with_completed(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph_completed: Paragraph
+        sample_paragraph_completed_model: Paragraph
     ) -> None:
         """Test that completed paragraphs are not in incomplete list"""
-        paragraph_repo.create(sample_paragraph_completed)
+        paragraph_repo.create(sample_paragraph_completed_model)
         
         incomplete = paragraph_repo.get_incomplete_paragraphs()
         
@@ -291,16 +291,16 @@ class TestParagraphRepositoryCustomQueries:
     def test_get_incomplete_paragraphs_with_various_progress(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph,
-        sample_paragraph_completed: Paragraph,
-        sample_paragraph_incomplete: Paragraph,
-        sample_paragraph_open: Paragraph
+        sample_paragraph_base_model: Paragraph,
+        sample_paragraph_completed_model: Paragraph,
+        sample_paragraph_incomplete_model: Paragraph,
+        sample_paragraph_open_model: Paragraph
     ) -> None:
         """Test get_incomplete_paragraphs returns all non-complete"""
-        paragraph_id_1 = paragraph_repo.create(sample_paragraph)          # 50%
-        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed)  # 100% (should not be in list)
-        paragraph_id_3 = paragraph_repo.create(sample_paragraph_incomplete) # 75%
-        paragraph_id_4 = paragraph_repo.create(sample_paragraph_open)       # 0%
+        paragraph_id_1 = paragraph_repo.create(sample_paragraph_base_model)          # 50%
+        paragraph_id_2 = paragraph_repo.create(sample_paragraph_completed_model)  # 100% (should not be in list)
+        paragraph_id_3 = paragraph_repo.create(sample_paragraph_incomplete_model) # 75%
+        paragraph_id_4 = paragraph_repo.create(sample_paragraph_open_model)       # 0%
         
         incomplete = paragraph_repo.get_incomplete_paragraphs()
         
@@ -321,16 +321,16 @@ class TestParagraphRepositoryCustomQueries:
     def test_get_paragraph_progress_summary_with_data(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph,
-        sample_paragraph_completed: Paragraph,
-        sample_paragraph_incomplete: Paragraph,
-        sample_paragraph_open: Paragraph
+        sample_paragraph_base_model: Paragraph,
+        sample_paragraph_completed_model: Paragraph,
+        sample_paragraph_incomplete_model: Paragraph,
+        sample_paragraph_open_model: Paragraph
     ) -> None:
         """Test progress summary with various paragraphs"""
-        paragraph_repo.create(sample_paragraph)               # 50% → in_progress
-        paragraph_repo.create(sample_paragraph_completed)    # 100% → completed
-        paragraph_repo.create(sample_paragraph_incomplete)   # 75% → in_progress
-        paragraph_repo.create(sample_paragraph_open)         # 0% → open
+        paragraph_repo.create(sample_paragraph_base_model)               # 50% → in_progress
+        paragraph_repo.create(sample_paragraph_completed_model)    # 100% → completed
+        paragraph_repo.create(sample_paragraph_incomplete_model)   # 75% → in_progress
+        paragraph_repo.create(sample_paragraph_open_model)         # 0% → open
         
         summary = paragraph_repo.get_paragraph_progress_summary()
         
@@ -370,24 +370,24 @@ class TestParagraphRepositoryDataIntegrity:
     def test_paragraph_to_entity_conversion(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test that paragraph is correctly converted to/from database"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         retrieved = paragraph_repo.get(paragraph_id)
         
         # Verify all fields match (except id which is assigned by DB)
-        assert retrieved.title == sample_paragraph.title
-        assert retrieved.completed == sample_paragraph.completed
-        assert retrieved.score == sample_paragraph.score
+        assert retrieved.title == sample_paragraph_base_model.title
+        assert retrieved.completed == sample_paragraph_base_model.completed
+        assert retrieved.score == sample_paragraph_base_model.score
 
     def test_multiple_updates_to_same_paragraph(
         self,
         paragraph_repo: ParagraphRepository,
-        sample_paragraph: Paragraph
+        sample_paragraph_base_model: Paragraph
     ) -> None:
         """Test multiple sequential updates to same paragraph"""
-        paragraph_id = paragraph_repo.create(sample_paragraph)
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
         
         for i in range(5):
             para = paragraph_repo.get(paragraph_id)

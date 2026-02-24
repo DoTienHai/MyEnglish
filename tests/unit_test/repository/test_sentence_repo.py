@@ -14,15 +14,15 @@ class TestSentenceRepositoryCreate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test creating a sentence successfully"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         
         assert sentence_id is not None
         assert isinstance(sentence_id, int)
@@ -32,39 +32,39 @@ class TestSentenceRepositoryCreate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test that created sentence can be retrieved"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         retrieved = sentence_repo.get(sentence_id)
         
         assert retrieved is not None
-        assert retrieved.input_sentence == sample_sentence.input_sentence
-        assert retrieved.user_translation == sample_sentence.user_translation
-        assert retrieved.machine_translation == sample_sentence.machine_translation
-        assert retrieved.score == sample_sentence.score
+        assert retrieved.input_sentence == sample_sentence_base_model.input_sentence
+        assert retrieved.user_translation == sample_sentence_base_model.user_translation
+        assert retrieved.machine_translation == sample_sentence_base_model.machine_translation
+        assert retrieved.score == sample_sentence_base_model.score
 
     def test_create_multiple_sentences(
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test creating multiple sentences"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_id_1 = sentence_repo.create(sample_sentence)
-        sentence_id_2 = sentence_repo.create(sample_sentence_2)
+        sentence_id_1 = sentence_repo.create(sample_sentence_base_model)
+        sentence_id_2 = sentence_repo.create(sample_sentence_2_model)
         
         assert sentence_id_1 is not None
         assert sentence_id_2 is not None
@@ -74,24 +74,24 @@ class TestSentenceRepositoryCreate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test that created sentence has all correct fields"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         retrieved = sentence_repo.get(sentence_id)
         
-        assert retrieved.paragraph_id == sample_sentence.paragraph_id
-        assert retrieved.sentence_index == sample_sentence.sentence_index
-        assert retrieved.input_sentence == sample_sentence.input_sentence
-        assert retrieved.user_translation == sample_sentence.user_translation
-        assert retrieved.machine_translation == sample_sentence.machine_translation
-        assert retrieved.score == sample_sentence.score
-        assert retrieved.note == sample_sentence.note
+        assert retrieved.paragraph_id == sample_sentence_base_model.paragraph_id
+        assert retrieved.sentence_index == sample_sentence_base_model.sentence_index
+        assert retrieved.input_sentence == sample_sentence_base_model.input_sentence
+        assert retrieved.user_translation == sample_sentence_base_model.user_translation
+        assert retrieved.machine_translation == sample_sentence_base_model.machine_translation
+        assert retrieved.score == sample_sentence_base_model.score
+        assert retrieved.note == sample_sentence_base_model.note
 
 
 class TestSentenceRepositoryRead:
@@ -101,15 +101,15 @@ class TestSentenceRepositoryRead:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test getting an existing sentence"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         retrieved = sentence_repo.get(sentence_id)
         
         assert retrieved is not None
@@ -139,18 +139,18 @@ class TestSentenceRepositoryRead:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test getting all sentences"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         all_sentences = sentence_repo.all()
         
@@ -161,15 +161,15 @@ class TestSentenceRepositoryRead:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test getting sentence by paragraph_id and sentence_index"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
+        sentence_repo.create(sample_sentence_base_model)
         
         retrieved = sentence_repo.get_by_paragraph_id_and_sentence_index(
             paragraph_id=1,
@@ -200,15 +200,15 @@ class TestSentenceRepositoryUpdate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test updating sentence translation"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         sentence = sentence_repo.get(sentence_id)
         
         sentence.user_translation = "Dịch mới của câu"
@@ -221,15 +221,15 @@ class TestSentenceRepositoryUpdate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test updating sentence score"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         sentence = sentence_repo.get(sentence_id)
         
         sentence.score = 0.75
@@ -242,15 +242,15 @@ class TestSentenceRepositoryUpdate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test updating sentence note"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         sentence = sentence_repo.get(sentence_id)
         
         sentence.note = "Updated note"
@@ -263,15 +263,15 @@ class TestSentenceRepositoryUpdate:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test that updating one field preserves other fields"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         sentence = sentence_repo.get(sentence_id)
         original_input = sentence.input_sentence
         
@@ -290,15 +290,15 @@ class TestSentenceRepositoryDelete:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test deleting an existing sentence"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_id = sentence_repo.create(sample_sentence)
+        sentence_id = sentence_repo.create(sample_sentence_base_model)
         assert sentence_repo.get(sentence_id) is not None
         
         sentence_repo.delete(sentence_id)
@@ -317,18 +317,18 @@ class TestSentenceRepositoryDelete:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test that deleting sentence reduces count"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         initial_count = sentence_repo.count_all()
         assert initial_count == 2
@@ -347,18 +347,18 @@ class TestSentenceRepositoryFilter:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test filtering sentences by paragraph_id"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         filtered = sentence_repo.filter(paragraph_id=1)
         
@@ -369,18 +369,18 @@ class TestSentenceRepositoryFilter:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test filtering sentences by sentence_index"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         filtered = sentence_repo.filter(sentence_index=1)
         
@@ -391,15 +391,15 @@ class TestSentenceRepositoryFilter:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test that filter returns empty list when no match"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
+        sentence_repo.create(sample_sentence_base_model)
         
         filtered = sentence_repo.filter(paragraph_id=999)
         
@@ -423,18 +423,18 @@ class TestSentenceRepositoryCount:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test count all with data"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         count = sentence_repo.count_all()
         
@@ -444,18 +444,18 @@ class TestSentenceRepositoryCount:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test count by paragraph_id"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         count = sentence_repo.count_by(paragraph_id=1)
         
@@ -478,15 +478,15 @@ class TestSentenceRepositoryAvgScore:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence
     ) -> None:
         """Test getting average score with single sentence"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
+        sentence_repo.create(sample_sentence_base_model)
         
         avg_score = sentence_repo.get_avg_score()
         
@@ -496,18 +496,18 @@ class TestSentenceRepositoryAvgScore:
         self,
         paragraph_repo: ParagraphRepository,
         sentence_repo: SentenceRepository,
-        sample_paragraph: Paragraph,
-        sample_sentence: Sentence,
-        sample_sentence_2: Sentence
+        sample_paragraph_base_model: Paragraph,
+        sample_sentence_base_model: Sentence,
+        sample_sentence_2_model: Sentence
     ) -> None:
         """Test getting average score with multiple sentences"""
         # Create paragraph first (foreign key requirement)
-        paragraph_id = paragraph_repo.create(sample_paragraph)
-        sample_sentence.paragraph_id = paragraph_id
-        sample_sentence_2.paragraph_id = paragraph_id
+        paragraph_id = paragraph_repo.create(sample_paragraph_base_model)
+        sample_sentence_base_model.paragraph_id = paragraph_id
+        sample_sentence_2_model.paragraph_id = paragraph_id
         
-        sentence_repo.create(sample_sentence)
-        sentence_repo.create(sample_sentence_2)
+        sentence_repo.create(sample_sentence_base_model)
+        sentence_repo.create(sample_sentence_2_model)
         
         avg_score = sentence_repo.get_avg_score()
         

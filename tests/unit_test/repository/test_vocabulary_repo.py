@@ -10,10 +10,10 @@ class TestVocabularyRepositoryCreate:
     def test_create_vocabulary_success(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test creating a vocabulary item successfully"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         
         assert vocab_id is not None
         assert isinstance(vocab_id, int)
@@ -22,26 +22,26 @@ class TestVocabularyRepositoryCreate:
     def test_created_vocabulary_can_be_retrieved(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test that created vocabulary can be retrieved"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         retrieved = vocabulary_repo.get(vocab_id)
         
         assert retrieved is not None
-        assert retrieved.word == sample_vocabulary.word
-        assert retrieved.vi_meaning == sample_vocabulary.vi_meaning
-        assert retrieved.example == sample_vocabulary.example
+        assert retrieved.word == sample_vocabulary_base_model.word
+        assert retrieved.vi_meaning == sample_vocabulary_base_model.vi_meaning
+        assert retrieved.example == sample_vocabulary_base_model.example
 
     def test_create_multiple_vocabulary_items(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary,
-        sample_vocabulary_2: Vocabulary
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
     ) -> None:
         """Test creating multiple vocabulary items"""
-        vocab_id_1 = vocabulary_repo.create(sample_vocabulary)
-        vocab_id_2 = vocabulary_repo.create(sample_vocabulary_2)
+        vocab_id_1 = vocabulary_repo.create(sample_vocabulary_base_model)
+        vocab_id_2 = vocabulary_repo.create(sample_vocabulary_2_model)
         
         assert vocab_id_1 is not None
         assert vocab_id_2 is not None
@@ -50,20 +50,20 @@ class TestVocabularyRepositoryCreate:
     def test_created_vocabulary_has_correct_fields(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test that created vocabulary has all correct fields"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         retrieved = vocabulary_repo.get(vocab_id)
         
-        assert retrieved.word == sample_vocabulary.word
-        assert retrieved.part_of_speech == sample_vocabulary.part_of_speech
-        assert retrieved.vi_meaning == sample_vocabulary.vi_meaning
-        assert retrieved.eng_description == sample_vocabulary.eng_description
-        assert retrieved.example == sample_vocabulary.example
-        assert retrieved.note == sample_vocabulary.note
-        assert retrieved.correct_count == sample_vocabulary.correct_count
-        assert retrieved.wrong_count == sample_vocabulary.wrong_count
+        assert retrieved.word == sample_vocabulary_base_model.word
+        assert retrieved.part_of_speech == sample_vocabulary_base_model.part_of_speech
+        assert retrieved.vi_meaning == sample_vocabulary_base_model.vi_meaning
+        assert retrieved.eng_description == sample_vocabulary_base_model.eng_description
+        assert retrieved.example == sample_vocabulary_base_model.example
+        assert retrieved.note == sample_vocabulary_base_model.note
+        assert retrieved.correct_count == sample_vocabulary_base_model.correct_count
+        assert retrieved.wrong_count == sample_vocabulary_base_model.wrong_count
 
 
 class TestVocabularyRepositoryRead:
@@ -72,10 +72,10 @@ class TestVocabularyRepositoryRead:
     def test_get_existing_vocabulary(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test getting an existing vocabulary item"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         retrieved = vocabulary_repo.get(vocab_id)
         
         assert retrieved is not None
@@ -104,12 +104,12 @@ class TestVocabularyRepositoryRead:
     def test_get_all_vocabulary_with_data(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary,
-        sample_vocabulary_2: Vocabulary
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
     ) -> None:
         """Test getting all vocabulary items"""
-        vocabulary_repo.create(sample_vocabulary)
-        vocabulary_repo.create(sample_vocabulary_2)
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        vocabulary_repo.create(sample_vocabulary_2_model)
         
         all_vocabulary = vocabulary_repo.all()
         
@@ -119,10 +119,10 @@ class TestVocabularyRepositoryRead:
     def test_get_all_vocabulary_method(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test get_all_vocabulary method"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         all_vocabulary = vocabulary_repo.get_all_vocabulary()
         
@@ -136,10 +136,10 @@ class TestVocabularyRepositoryUpdate:
     def test_update_vocabulary_meaning(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test updating vocabulary meaning"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         vocab = vocabulary_repo.get(vocab_id)
         
         vocab.vi_meaning = "Định nghĩa mới"
@@ -151,10 +151,10 @@ class TestVocabularyRepositoryUpdate:
     def test_update_vocabulary_example(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test updating vocabulary example"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         vocab = vocabulary_repo.get(vocab_id)
         
         vocab.example = "New example sentence"
@@ -166,10 +166,10 @@ class TestVocabularyRepositoryUpdate:
     def test_update_correct_count(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test updating correct count"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         vocab = vocabulary_repo.get(vocab_id)
         
         vocab.correct_count = 10
@@ -181,10 +181,10 @@ class TestVocabularyRepositoryUpdate:
     def test_update_wrong_count(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test updating wrong count"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         vocab = vocabulary_repo.get(vocab_id)
         
         vocab.wrong_count = 5
@@ -196,10 +196,10 @@ class TestVocabularyRepositoryUpdate:
     def test_update_preserves_other_fields(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test that updating one field preserves other fields"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         vocab = vocabulary_repo.get(vocab_id)
         original_word = vocab.word
         
@@ -217,10 +217,10 @@ class TestVocabularyRepositoryDelete:
     def test_delete_existing_vocabulary(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test deleting an existing vocabulary item"""
-        vocab_id = vocabulary_repo.create(sample_vocabulary)
+        vocab_id = vocabulary_repo.create(sample_vocabulary_base_model)
         assert vocabulary_repo.get(vocab_id) is not None
         
         vocabulary_repo.delete(vocab_id)
@@ -238,12 +238,12 @@ class TestVocabularyRepositoryDelete:
     def test_delete_reduces_count(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary,
-        sample_vocabulary_2: Vocabulary
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
     ) -> None:
         """Test that deleting vocabulary reduces count"""
-        vocabulary_repo.create(sample_vocabulary)
-        vocabulary_repo.create(sample_vocabulary_2)
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        vocabulary_repo.create(sample_vocabulary_2_model)
         
         initial_count = vocabulary_repo.count_all()
         assert initial_count == 2
@@ -261,10 +261,10 @@ class TestVocabularyRepositoryFilter:
     def test_filter_by_word(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test filtering vocabulary by word"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         filtered = vocabulary_repo.filter(word="serendipity")
         
@@ -274,12 +274,12 @@ class TestVocabularyRepositoryFilter:
     def test_filter_by_part_of_speech(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary,
-        sample_vocabulary_2: Vocabulary
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
     ) -> None:
         """Test filtering vocabulary by part of speech"""
-        vocabulary_repo.create(sample_vocabulary)
-        vocabulary_repo.create(sample_vocabulary_2)
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        vocabulary_repo.create(sample_vocabulary_2_model)
         
         filtered = vocabulary_repo.filter(part_of_speech="noun")
         
@@ -289,10 +289,10 @@ class TestVocabularyRepositoryFilter:
     def test_filter_returns_empty_list_when_no_match(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test that filter returns empty list when no match"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         filtered = vocabulary_repo.filter(word="nonexistent")
         
@@ -315,12 +315,12 @@ class TestVocabularyRepositoryCount:
     def test_count_all_with_data(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary,
-        sample_vocabulary_2: Vocabulary
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
     ) -> None:
         """Test count all with data"""
-        vocabulary_repo.create(sample_vocabulary)
-        vocabulary_repo.create(sample_vocabulary_2)
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        vocabulary_repo.create(sample_vocabulary_2_model)
         
         count = vocabulary_repo.count_all()
         
@@ -329,10 +329,10 @@ class TestVocabularyRepositoryCount:
     def test_count_by_part_of_speech(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test count by part of speech"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         count = vocabulary_repo.count_by(part_of_speech="noun")
         
@@ -341,10 +341,10 @@ class TestVocabularyRepositoryCount:
     def test_count_vocabulary_method(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test count_vocabulary (via get_all_vocabulary)"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         all_vocabulary = vocabulary_repo.get_all_vocabulary()
         
@@ -367,10 +367,10 @@ class TestVocabularyRepositoryGroupedByDate:
     def test_count_vocabulary_grouped_by_date_with_data(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test count grouped by date with data"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         result = vocabulary_repo.count_vocabulary_grouped_by_date("2026-01-01")
         
@@ -385,10 +385,10 @@ class TestVocabularyRepositoryExists:
     def test_exists_returns_true_for_existing_vocabulary(
         self,
         vocabulary_repo: VocabularyRepository,
-        sample_vocabulary: Vocabulary
+        sample_vocabulary_base_model: Vocabulary
     ) -> None:
         """Test that exists returns True for existing vocabulary"""
-        vocabulary_repo.create(sample_vocabulary)
+        vocabulary_repo.create(sample_vocabulary_base_model)
         
         exists = vocabulary_repo.exists(word="serendipity")
         
