@@ -51,3 +51,132 @@ def sentence_repo(memory_db: DBConnect) -> SentenceRepository:
 def vocabulary_repo(memory_db: DBConnect) -> VocabularyRepository:
     """VocabularyRepository với in-memory DB"""
     return VocabularyRepository(memory_db)
+
+
+# Additional fixtures for db_connect specific tests
+
+@pytest.fixture
+def db_memory():
+    """Create a fresh DBConnect instance with in-memory database"""
+    DBConnect._instance = None
+    db = DBConnect(":memory:")
+    yield db
+    
+    if db.conn:
+        db.close()
+
+
+@pytest.fixture
+def db_with_test_table():
+    """Create a DBConnect instance with a test table"""
+    DBConnect._instance = None
+    db = DBConnect(":memory:")
+    
+    # Create test table
+    db.execute(
+        "CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT)",
+        commit=True
+    )
+    
+    yield db
+    
+    if db.conn:
+        db.close()
+
+
+@pytest.fixture
+def db_with_test_data():
+    """Create a DBConnect instance with test table and sample data (5 rows)"""
+    DBConnect._instance = None
+    db = DBConnect(":memory:")
+    
+    # Create test table
+    db.execute(
+        "CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT)",
+        commit=True
+    )
+    
+    # Insert test data
+    for i in range(5):
+        db.execute(
+            "INSERT INTO test_table (name) VALUES (?)",
+            (f"Test{i}",),
+            commit=True
+        )
+    
+    yield db
+    
+    if db.conn:
+        db.close()
+
+
+@pytest.fixture
+def db_with_3_rows():
+    """Create a DBConnect instance with test table and 3 sample rows"""
+    DBConnect._instance = None
+    db = DBConnect(":memory:")
+    
+    # Create test table
+    db.execute(
+        "CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT)",
+        commit=True
+    )
+    
+    # Insert test data
+    for i in range(3):
+        db.execute(
+            "INSERT INTO test_table (name) VALUES (?)",
+            (f"Test{i}",),
+            commit=True
+        )
+    
+    yield db
+    
+    if db.conn:
+        db.close()
+
+
+@pytest.fixture
+def db_with_fk_table():
+    """Create a DBConnect instance with foreign key constraints enabled"""
+    DBConnect._instance = None
+    db = DBConnect(":memory:")
+    
+    # Create parent table
+    db.execute(
+        "CREATE TABLE parent (id INTEGER PRIMARY KEY, name TEXT)",
+        commit=True
+    )
+    
+    # Create child table with foreign key
+    db.execute(
+        "CREATE TABLE child (id INTEGER PRIMARY KEY, parent_id INTEGER, value TEXT, "
+        "FOREIGN KEY (parent_id) REFERENCES parent(id))",
+        commit=True
+    )
+    
+    # Insert parent data
+    db.execute("INSERT INTO parent (name) VALUES (?)", ("Parent1",), commit=True)
+    db.execute("INSERT INTO parent (name) VALUES (?)", ("Parent2",), commit=True)
+    
+    # Insert child data
+    db.execute(
+        "INSERT INTO child (parent_id, value) VALUES (?, ?)",
+        (1, "Child1"),
+        commit=True
+    )
+    db.execute(
+        "INSERT INTO child (parent_id, value) VALUES (?, ?)",
+        (1, "Child2"),
+        commit=True
+    )
+    db.execute(
+        "INSERT INTO child (parent_id, value) VALUES (?, ?)",
+        (2, "Child3"),
+        commit=True
+    )
+    
+    yield db
+    
+    if db.conn:
+        db.close()
