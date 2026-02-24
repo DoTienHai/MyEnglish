@@ -402,3 +402,125 @@ class TestVocabularyRepositoryExists:
         exists = vocabulary_repo.exists(word="nonexistent")
         
         assert exists is False
+
+class TestVocabularyRepositoryGetAllComplete:
+    """Tests for get_all_vocabulary_complete() method"""
+    
+    def test_get_all_vocabulary_complete_returns_complete_entries(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        sample_vocabulary_base_model: Vocabulary
+    ) -> None:
+        """Test that get_all_vocabulary_complete returns vocabulary with complete data"""
+        # Create complete vocabulary entry
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        
+        # Retrieve complete entries
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        assert len(complete_vocabs) > 0
+        assert isinstance(complete_vocabs, list)
+    
+    def test_get_all_vocabulary_complete_filters_out_missing_example(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        vocabulary_complete_model: Vocabulary,
+        vocabulary_no_example_model: Vocabulary
+    ) -> None:
+        """Test that entries without example are filtered out"""
+        vocabulary_repo.create(vocabulary_complete_model)
+        vocabulary_repo.create(vocabulary_no_example_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        print("aaaaaaaaaaaaaaaaaaa", complete_vocabs)
+        # Should only return 1 vocabulary (the complete one)
+        assert len(complete_vocabs) == 1
+        assert complete_vocabs[0].word == "serendipity"
+    
+    def test_get_all_vocabulary_complete_filters_out_null_example(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        vocabulary_complete_model: Vocabulary
+    ) -> None:
+        """Test that entries with NULL example are filtered out"""
+        vocabulary_repo.create(vocabulary_complete_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        # All returned vocabs should have non-null, non-empty example
+        assert all(vocab.example and vocab.example.strip() for vocab in complete_vocabs)
+    
+    def test_get_all_vocabulary_complete_filters_out_missing_vi_meaning(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        vocabulary_complete_model: Vocabulary,
+        vocabulary_no_vi_meaning_model: Vocabulary
+    ) -> None:
+        """Test that entries without vi_meaning are filtered out"""
+        vocabulary_repo.create(vocabulary_complete_model)
+        vocabulary_repo.create(vocabulary_no_vi_meaning_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        # Should only return 1 vocabulary (the complete one)
+        assert len(complete_vocabs) == 1
+        # All returned vocabs should have non-empty vi_meaning
+        assert all(vocab.vi_meaning and vocab.vi_meaning.strip() for vocab in complete_vocabs)
+    
+    def test_get_all_vocabulary_complete_returns_vocabulary_models(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        sample_vocabulary_base_model: Vocabulary
+    ) -> None:
+        """Test that get_all_vocabulary_complete returns Vocabulary model objects"""
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        assert len(complete_vocabs) > 0
+        assert all(isinstance(vocab, Vocabulary) for vocab in complete_vocabs)
+    
+    def test_get_all_vocabulary_complete_returns_empty_when_no_complete_entries(
+        self,
+        vocabulary_repo: VocabularyRepository
+    ) -> None:
+        """Test that empty list is returned when no complete entries exist"""
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        assert complete_vocabs == []
+    
+    def test_get_all_vocabulary_complete_returns_multiple_entries(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        sample_vocabulary_base_model: Vocabulary,
+        sample_vocabulary_2_model: Vocabulary
+    ) -> None:
+        """Test that multiple complete entries are returned"""
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        vocabulary_repo.create(sample_vocabulary_2_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        assert len(complete_vocabs) == 2
+        assert isinstance(complete_vocabs, list)
+        assert all(isinstance(vocab, Vocabulary) for vocab in complete_vocabs)
+    
+    def test_get_all_vocabulary_complete_preserves_all_fields(
+        self,
+        vocabulary_repo: VocabularyRepository,
+        sample_vocabulary_base_model: Vocabulary
+    ) -> None:
+        """Test that all vocabulary fields are preserved in returned objects"""
+        vocabulary_repo.create(sample_vocabulary_base_model)
+        
+        complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
+        
+        assert len(complete_vocabs) > 0
+        vocab = complete_vocabs[0]
+        
+        # Verify all important fields exist and have values
+        assert vocab.id is not None
+        assert vocab.word is not None
+        assert vocab.vi_meaning is not None
+        assert vocab.example is not None
+        assert vocab.part_of_speech is not None

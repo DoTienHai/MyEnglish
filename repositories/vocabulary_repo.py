@@ -50,7 +50,8 @@ class VocabularyRepository(BaseRepository[Vocabulary]):
             SELECT * FROM {self.table_name}
             WHERE example IS NOT NULL AND example != '' AND vi_meaning IS NOT NULL AND vi_meaning != ''
         """
-        return self.db.fetch_all(query)
+        rows = self.db.fetch_all(query)
+        return [self.to_entity(row) for row in rows]
         
         
         
