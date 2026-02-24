@@ -88,10 +88,3 @@ class BaseRepository(Generic[T]):
     # Convert an entity/model instance to a list of values for database operations
     def to_row(self, entity):
         return [getattr(entity, col) for col in self.columns]
-
-    # ---------------------------
-    # RAW
-    # ---------------------------
-
-    def raw(self, query, params=()):
-        return self.db.fetch_all(query, params)
