@@ -432,7 +432,7 @@ class TestVocabularyRepositoryGetAllComplete:
         vocabulary_repo.create(vocabulary_no_example_model)
         
         complete_vocabs = vocabulary_repo.get_all_vocabulary_complete()
-        print("aaaaaaaaaaaaaaaaaaa", complete_vocabs)
+
         # Should only return 1 vocabulary (the complete one)
         assert len(complete_vocabs) == 1
         assert complete_vocabs[0].word == "serendipity"

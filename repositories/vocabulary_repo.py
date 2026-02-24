@@ -44,14 +44,14 @@ class VocabularyRepository(BaseRepository[Vocabulary]):
         row = self.db.fetch_one(query)
         return row[0] if row else 0
     
-    def get_all_vocabulary_complete(self) -> list[Vocabulary]:
+    def get_all_vocabulary_complete(self) -> list[Vocabulary] | None:
         # TO DO: get all vocabulary entries with complete examples and vi_meaning (non-empty example field)
         query = f"""
             SELECT * FROM {self.table_name}
             WHERE example IS NOT NULL AND example != '' AND vi_meaning IS NOT NULL AND vi_meaning != ''
         """
         rows = self.db.fetch_all(query)
-        return [self.to_entity(row) for row in rows]
+        return [self.to_entity(row) for row in rows] if rows else None
         
         
         

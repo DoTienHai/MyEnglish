@@ -74,7 +74,7 @@ class VocabularyService:
         all_vocabularies = self.vocab_repo.get_all_vocabulary_complete()
         if not all_vocabularies:
             return None
-        return Vocabulary(*random.choice(all_vocabularies))
+        return random.choice(all_vocabularies)
 
     def count_vocabulary_by_date(self, from_date: str) -> list[tuple]:
         """Get vocabulary count grouped by creation date."""
