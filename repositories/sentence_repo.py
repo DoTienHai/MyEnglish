@@ -3,7 +3,7 @@ from model.sentence import Sentence
 from repositories.db_connect import DBConnect
 
 
-class SentenceRepository(BaseRepository):
+class SentenceRepository(BaseRepository[Sentence]):
     table_name = "sentences"
     columns = [
         "id",

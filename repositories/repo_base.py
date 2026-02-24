@@ -1,7 +1,10 @@
+from typing import TypeVar, Generic, Optional, List, Any
 from repositories.db_connect import DBConnect
 
+T = TypeVar('T')  # Generic type variable for the model class
+
 # Base repository class providing generic CRUD operations
-class BaseRepository:
+class BaseRepository(Generic[T]):
     table_name = None          # required to be set by subclass
     primary_key = "id"         # default
     columns = []               # list of columns in the table
@@ -22,12 +25,12 @@ class BaseRepository:
         new_id = self.db.execute(query, values, commit=True)
         return new_id
 
-    def get(self, id):
+    def get(self, id) -> Optional[T]:
         query = f"SELECT * FROM {self.table_name} WHERE {self.primary_key} = ?"
         row = self.db.fetch_one(query, (id,))
         return self.to_entity(row) if row else None
 
-    def update(self, entity):
+    def update(self, entity: T):
         set_clause = ", ".join([f"{col} = ?" for col in self.columns])
         values = self.to_row(entity) + [getattr(entity, self.primary_key)]
 
@@ -38,7 +41,7 @@ class BaseRepository:
         query = f"DELETE FROM {self.table_name} WHERE {self.primary_key} = ?"
         self.db.execute(query, (id,), commit=True)
 
-    def all(self):
+    def all(self) -> List[T]:
         query = f"SELECT * FROM {self.table_name}"
         rows = self.db.fetch_all(query)
         return [self.to_entity(r) for r in rows]
@@ -47,7 +50,7 @@ class BaseRepository:
     # ADVANCED QUERY
     # ---------------------------
 
-    def filter(self, **kwargs):
+    def filter(self, **kwargs) -> List[T]:
         if not kwargs:
             return self.all()
 
@@ -77,7 +80,7 @@ class BaseRepository:
     # Conversion helpers
     # ---------------------------
     # Convert a database row to an entity/model instance
-    def to_entity(self, row):
+    def to_entity(self, row) -> Optional[T]:
         if row is None:
             return None
         return self.model_class(*row)

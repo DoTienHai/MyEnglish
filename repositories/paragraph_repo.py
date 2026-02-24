@@ -3,7 +3,7 @@ from repositories.repo_base import BaseRepository
 from model.paragraph import Paragraph
 from repositories.db_connect import DBConnect
 
-class ParagraphRepository(BaseRepository):
+class ParagraphRepository(BaseRepository[Paragraph]):
     table_name = "paragraphs"
     columns = [
         "id",

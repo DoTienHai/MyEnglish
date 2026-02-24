@@ -2,7 +2,7 @@ from repositories.repo_base import BaseRepository
 from model.vocabulary import Vocabulary
 from repositories.db_connect import DBConnect
 
-class VocabularyRepository(BaseRepository):
+class VocabularyRepository(BaseRepository[Vocabulary]):
     table_name = "vocabulary_items"
     columns = [
         "id",
