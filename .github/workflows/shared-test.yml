@@ -1,0 +1,70 @@
+name: Shared Utilities Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'shared/**'
+      - 'tests/unit_test/shared/**'
+      - 'tests/conftest.py'
+      - '.github/workflows/shared-test.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'shared/**'
+      - 'tests/unit_test/shared/**'
+      - 'tests/conftest.py'
+      - '.github/workflows/shared-test.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: false
+
+jobs:
+  test-shared:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12.4
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.4'
+        cache: 'pip'
+        cache-dependency-path: requirements.txt
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run Shared Utilities Unit Tests
+      run: pytest tests/unit_test/shared -v --tb=short --html=test_report/unit_test_report/shared/report.html --self-contained-html --cov=shared --cov-report=html:test_report/unit_test_report/shared/htmlcov --cov-report=term
+
+    - name: Remove coverage .gitignore
+      run: Remove-Item -LiteralPath test_report/unit_test_report/shared/htmlcov/.gitignore -Force -ErrorAction SilentlyContinue
+
+    - name: Upload test reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-reports-shared
+        path: test_report/unit_test_report/shared/
+        retention-days: 30
+
+    - name: Deploy test reports to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./test_report
+        publish_branch: test_report
+        force_orphan: false
+        keep_files: true
