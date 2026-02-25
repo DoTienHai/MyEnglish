@@ -24,11 +24,6 @@
           "name": "ViewModel Tests",
           "icon": "🧩",
           "folder": "viewmodel"
-        },
-        {
-          "name": "Shared Utilities Tests",
-          "icon": "🛠️",
-          "folder": "shared"
         }
       ]
     }
